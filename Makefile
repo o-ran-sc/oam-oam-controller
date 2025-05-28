@@ -34,7 +34,7 @@ venv: ## [Install] Set up Python virtual environment
 
 install-pip: ## [Install] Install Python dependencies
 	@echo "## Installing Python dependencies..."
-	$(ACTIVATE) && pip install -r requirements.txt
+	$(ACTIVATE) && pip install -r docs/requirements-docs.txt
 
 docs: ## [Docs] Shows the docker status
 	@echo "Gererate READ_THE_DOCS output"
