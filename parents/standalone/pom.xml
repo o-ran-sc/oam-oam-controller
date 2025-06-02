@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.onap.oparent</groupId>
+        <artifactId>oparent</artifactId>
+        <version>3.1.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+    <artifactId>standalone-parent</artifactId>
+    <version>3.0.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>O-RAN-SC :: ${project.groupId} :: ${project.artifactId}</name>
+    <description>Root POM to be used in place of oparent for CCSDK based projects</description>
+    <url>http://wiki.o-ran-sc.org</url>
+    <organization>
+        <name>O-RAN-SC</name>
+    </organization>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://jira.o-ran-sc.org/</url>
+    </issueManagement>
+    <distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+            <url>${o-ran-sc.nexus.release-url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>${o-ran-sc.nexus.snapshot-url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <!-- Sonar properties -->
+        <sonar.scanner.version>3.7.0.1746</sonar.scanner.version>
+        <sonar-jacoco-listeners.version>3.2</sonar-jacoco-listeners.version>
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <!-- Default Sonar configuration -->
+        <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco-ut/jacoco.xml,${project.reporting.outputDirectory}/jacoco-it/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <!-- Note: This list should match jacoco-maven-plugin's exclusion list below -->
+        <sonar.exclusions>**/gen/**,**/generated-sources/**,**/yang-gen**,**/pax/**</sonar.exclusions>
+
+        <!-- Jacoco properties -->
+        <jacoco.version>0.8.8</jacoco.version>
+        <!-- O-RAN-SC repositories -->
+        <o-ran-sc.nexus.url>https://nexus.o-ran-sc.org</o-ran-sc.nexus.url>
+        <o-ran-sc.nexus.host>nexus.o-ran-sc.org</o-ran-sc.nexus.host>
+        <o-ran-sc.nexus.port>443</o-ran-sc.nexus.port>
+        <o-ran-sc.nexus.protocol>https</o-ran-sc.nexus.protocol>
+        <o-ran-sc.nexus.public-url>https://nexus.o-ran-sc.org/content/groups/public</o-ran-sc.nexus.public-url>
+        <o-ran-sc.nexus.staging-url>https://nexus.o-ran-sc.org/content/groups/staging</o-ran-sc.nexus.staging-url>
+        <o-ran-sc.nexus.release-url>https://nexus.o-ran-sc.org/content/repositories/releases</o-ran-sc.nexus.release-url>
+        <o-ran-sc.nexus.snapshot-url>https://nexus.o-ran-sc.org/content/repositories/snapshots</o-ran-sc.nexus.snapshot-url>
+        <o-ran-sc.nexus.staging.server-id>o-ran-sc-staging</o-ran-sc.nexus.staging.server-id>
+        <o-ran-sc.nexus.staging.profile-id>176c31dfe190a</o-ran-sc.nexus.staging.profile-id>
+
+        <java.version.source>21</java.version.source>
+        <java.version.target>21</java.version.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <bundle.plugin.version>5.1.1</bundle.plugin.version>
+        <checkstyle.skip>true</checkstyle.skip>
+
+        <log4j.version>2.17.1</log4j.version>
+        <log4j2.version>2.17.1</log4j2.version>
+        <mariadb.connector.version>2.7.2</mariadb.connector.version>
+        <fasterxml.jackson.version>2.12.4</fasterxml.jackson.version>
+        <velocity.version>2.3</velocity.version>
+        <dmaap.listener.version>1.1.14</dmaap.listener.version>
+        <sdc.client.version>2.0.0</sdc.client.version>
+        <sdc.tosca.version>1.6.5</sdc.tosca.version>
+
+        <dependency-list.file>direct-dependencies.txt</dependency-list.file>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.onap.sdc.sdc-distribution-client</groupId>
+                <artifactId>sdc-distribution-client</artifactId>
+                <version>${sdc.client.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.onap.sdc.sdc-tosca</groupId>
+                <artifactId>sdc-tosca</artifactId>
+                <version>${sdc.tosca.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.29</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.17.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.17.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.17.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${fasterxml.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${fasterxml.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${fasterxml.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-engine-core</artifactId>
+                <version>${velocity.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>3.12.4</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>6.11</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.vorburger.mariaDB4j</groupId>
+                <artifactId>mariaDB4j</artifactId>
+                <version>2.2.3</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>o-ran-sc-public</id>
+            <url>${o-ran-sc.nexus.public-url}</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>o-ran-sc-staging</id>
+            <url>${o-ran-sc.nexus.staging-url}</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>o-ran-sc-release</id>
+            <name>o-ran-sc-repository-releases</name>
+            <url>${o-ran-sc.nexus.release-url}</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>o-ran-sc-snapshot</id>
+            <name>o-ran-sc-repository-snapshots</name>
+            <url>${o-ran-sc.nexus.snapshot-url}</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>o-ran-sc-public</id>
+            <url>${o-ran-sc.nexus.public-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>o-ran-sc-staging</id>
+            <url>${o-ran-sc.nexus.staging-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>o-ran-sc-snapshot</id>
+            <url>${o-ran-sc.nexus.snapshot-url}</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <!-- Black Duck plugin dependencies -->
+        <pluginRepository>
+            <id>JCenter</id>
+            <name>JCenter Repository</name>
+            <url>http://jcenter.bintray.com</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>Restlet</id>
+            <name>Restlet Repository</name>
+            <url>http://maven.restlet.com</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <!-- This version supports the "deployAtEnd" parameter -->
+                    <version>2.8</version>
+                    <configuration>
+                        <skip/>
+                        <deployAtEnd>true</deployAtEnd>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.ferstl</groupId>
+                    <artifactId>depgraph-maven-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <configuration>
+                        <graphFormat>text</graphFormat>
+                        <outputFileName>${dependency-list.file}</outputFileName>
+                        <outputDirectory>${project.basedir}</outputDirectory>
+                        <transitiveExcludes>*</transitiveExcludes>
+                        <showVersions>true</showVersions>
+                        <showGroupIds>true</showGroupIds>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <!-- Jacoco / Sonar -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <destFile>${project.build.directory}/code-coverage/jacoco-ut.exec</destFile>
+                            <!-- Sets the name of the property containing the settings for JaCoCo
+                                                                 runtime agent. -->
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <!-- Ensures that the code coverage report for unit tests is created
+                                                 after unit tests have been run. -->
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>${project.build.directory}/code-coverage/jacoco-ut.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <destFile>${project.build.directory}/code-coverage/jacoco-it.exec</destFile>
+                            <!-- Sets the name of the property containing the settings for JaCoCo
+                                                                 runtime agent. -->
+                            <propertyName>failsafeArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <!-- Ensures that the code coverage report for integration tests after
+                                                 integration tests have been run. -->
+                    <execution>
+                        <id>post-integration-test</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>${project.build.directory}/code-coverage/jacoco-it.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.0</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <processAllModules>true</processAllModules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>sonar-jacoco-aggregate</id>
+            <activation>
+                <property>
+                    <name>onap.jacoco.aggregateFile</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>merge</id>
+                                <goals>
+                                    <goal>merge</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <destFile>${onap.jacoco.aggregateFile}</destFile>
+                                    <fileSets>
+                                        <fileSet>
+                                            <directory>${project.basedir}</directory>
+                                            <includes>
+                                                <include>**/target/code-coverage/*.exec</include>
+                                            </includes>
+                                        </fileSet>
+                                    </fileSets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
