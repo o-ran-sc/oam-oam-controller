@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+        <artifactId>parent</artifactId>
+        <version>3.0.2-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+    <artifactId>springboot-aggregator</artifactId>
+    <version>3.0.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>O-RAN-SC :: ${project.groupId} :: ${project.artifactId}</name>
+
+    <modules>
+        <module>spring-boot-setup</module>
+        <module>springboot23</module>
+        <module>springboot25</module>
+        <module>springboot26</module>
+        <module>springboot27</module>
+        <module>springboot30</module>
+        <module>springboot31</module>
+        <module>springboot32</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
