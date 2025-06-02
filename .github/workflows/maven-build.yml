@@ -1,0 +1,44 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      GH_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21 and maven 3.9.9
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        maven-version: '3.9.9'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: 🧾 Print All Environment Variables
+      run: env
+
+    - name: 🚀 Deploy to GitHub Packages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: mvn -s ${GITHUB_WORKSPACE}/settings.xml --file ${GITHUB_WORKSPACE}/parents/pom.xml deploy -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/o-ran-sc/oam-oam-controller -DskipTests=true
+      

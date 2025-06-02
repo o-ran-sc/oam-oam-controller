@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+    <artifactId>client-parent</artifactId>
+    <version>3.0.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>O-RAN-SC :: ${project.groupId} :: ${project.artifactId}</name>
+    <description>Root POM to be used for yang2swagger generation in CCSDK based projects</description>
+    <url>http://wiki.onap.org</url>
+    <organization>
+        <name>O-RAN-SC</name>
+    </organization>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://jira.onap.org/</url>
+    </issueManagement>
+    <distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+
+        <!-- properties from oparent -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <o-ran-sc.nexus.url>https://nexus.o-ran-sc.org</o-ran-sc.nexus.url>
+        <!-- sitePath may be overridden in the inheriting POM if desired -->
+        <sitePath>/content/sites/site/${project.groupId}/${project.artifactId}/${project.version}</sitePath>
+
+        <!-- O-RAN-SC repositories -->
+        <o-ran-sc.nexus.host>nexus.o-ran-sc.org</o-ran-sc.nexus.host>
+        <o-ran-sc.nexus.port>443</o-ran-sc.nexus.port>
+        <o-ran-sc.nexus.protocol>https</o-ran-sc.nexus.protocol>
+        <o-ran-sc.nexus.public-url>https://nexus.o-ran-sc.org/content/groups/public</o-ran-sc.nexus.public-url>
+        <o-ran-sc.nexus.staging-url>https://nexus.o-ran-sc.org/content/groups/staging</o-ran-sc.nexus.staging-url>
+        <o-ran-sc.nexus.release-url>https://nexus.o-ran-sc.org/content/repositories/releases</o-ran-sc.nexus.release-url>
+        <o-ran-sc.nexus.snapshot-url>https://nexus.o-ran-sc.org/content/repositories/snapshots</o-ran-sc.nexus.snapshot-url>
+        <o-ran-sc.nexus.staging.server-id>o-ran-sc-staging</o-ran-sc.nexus.staging.server-id>
+        <o-ran-sc.nexus.staging.profile-id>176c31dfe190a</o-ran-sc.nexus.staging.profile-id>
+
+        <!-- OpenDaylight repositories -->
+        <opendaylight.nexus.public-url>https://nexus.opendaylight.org/content/repositories/public/</opendaylight.nexus.public-url>
+        <opendaylight.nexus.snapshot-url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</opendaylight.nexus.snapshot-url>
+
+        <java.version>11</java.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+
+        <checkstyle.skip>true</checkstyle.skip>
+
+        <org.json.version>20170516</org.json.version>
+        <jackson.version>2.11.0</jackson.version>
+        <!-- Need to stick to JUnit 4.11 until https://github.com/jayway/powermock/issues/560
+            is fixed (either in PowerMock or with a new JUnit release) -->
+        <!-- Used everywhere -->
+        <junit.version>4.13</junit.version>
+        <mockito.version>2.8.9</mockito.version>
+        <lombok.version>1.18.0</lombok.version>
+        <openpojo.version>0.8.10</openpojo.version>
+        <spring.version>4.3.7.RELEASE</spring.version>
+        <javax.validation.version>1.1.0.Final</javax.validation.version>
+        <swagger.version>1.5.21</swagger.version>
+        <yangtools.version>1.2.3</yangtools.version>
+        <yang2swagger.version>1.1.12</yang2swagger.version>
+
+        <!-- O-RAN-SC repositories -->
+        <o-ran-sc.nexus.host>nexus.o-ran-sc.org</o-ran-sc.nexus.host>
+        <o-ran-sc.nexus.port>443</o-ran-sc.nexus.port>
+        <o-ran-sc.nexus.protocol>https</o-ran-sc.nexus.protocol>
+        <o-ran-sc.nexus.public-url>https://nexus.o-ran-sc.org/content/groups/public</o-ran-sc.nexus.public-url>
+        <o-ran-sc.nexus.staging-url>https://nexus.o-ran-sc.org/content/groups/staging</o-ran-sc.nexus.staging-url>
+        <o-ran-sc.nexus.release-url>https://nexus.o-ran-sc.org/content/repositories/releases</o-ran-sc.nexus.release-url>
+        <o-ran-sc.nexus.snapshot-url>https://nexus.o-ran-sc.org/content/repositories/snapshots</o-ran-sc.nexus.snapshot-url>
+        <o-ran-sc.nexus.staging.server-id>o-ran-sc-staging</o-ran-sc.nexus.staging.server-id>
+        <o-ran-sc.nexus.staging.profile-id>176c31dfe190a</o-ran-sc.nexus.staging.profile-id>
+
+        <!-- Default api name for client -->
+        <api.name>client</api.name>
+
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.openpojo</groupId>
+            <artifactId>openpojo</artifactId>
+            <version>${openpojo.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${org.json.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-base</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${javax.validation.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jaxrs</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>onap-public</id>
+            <url>https://nexus.o-ran-sc.org/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>onap-staging</id>
+            <url>https://nexus.o-ran-sc.org/content/groups/staging</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>o-ran-sc-release</id>
+            <name>o-ran-sc-repository-releases</name>
+            <url>https://nexus.o-ran-sc.org/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>o-ran-sc-snapshot</id>
+            <name>o-ran-sc-repository-snapshots</name>
+            <url>https://nexus.o-ran-sc.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>opendaylight-mirror</id>
+            <name>opendaylight-mirror</name>
+            <url>https://nexus.opendaylight.org/content/repositories/public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>opendaylight-snapshot</id>
+            <name>opendaylight-snapshot</name>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>onap-bintray</id>
+            <name>onap-bintray</name>
+            <url>https://nexus.o-ran-sc.org/content/repositories/bintray/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>onap-public</id>
+            <url>${o-ran-sc.nexus.public-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>onap-staging</id>
+            <url>${o-ran-sc.nexus.staging-url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>onap-snapshot</id>
+            <url>${o-ran-sc.nexus.snapshot-url}</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>opendaylight-mirror</id>
+            <name>opendaylight-mirror</name>
+            <url>${opendaylight.nexus.public-url}</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>opendaylight-snapshot</id>
+            <name>opendaylight-snapshot</name>
+            <url>${opendaylight.nexus.snapshot-url}</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <!-- Black Duck plugin dependencies -->
+        <pluginRepository>
+            <id>JCenter</id>
+            <name>JCenter Repository</name>
+            <url>http://jcenter.bintray.com</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>Restlet</id>
+            <name>Restlet Repository</name>
+            <url>http://maven.restlet.com</url>
+        </pluginRepository>
+
+        <pluginRepository>
+            <id>onap-bintray</id>
+            <name>onap-bintray</name>
+            <url>https://nexus.o-ran-sc.org/content/repositories/bintray/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <!-- This version supports the "deployAtEnd" parameter -->
+                    <version>2.8</version>
+                    <configuration>
+                        <skip/>
+                        <deployAtEnd>true</deployAtEnd>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <release>${java.version}</release>
+                        <!--explicitly remove source and target-->
+                        <source combine.self="override"/>
+                        <target combine.self="override"/>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <!-- Sets the VM argument line used when unit tests are run. -->
+                        <argLine>${surefireArgLine}</argLine>
+                        <!-- Excludes integration tests when unit tests are run. -->
+                        <excludes>
+                            <exclude>**/IT*.java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven-failsafe-plugin.version}</version>
+                    <executions>
+                        <!-- Ensures that both integration-test and verify goals of the Failsafe Maven plugin are executed. -->
+                        <execution>
+                            <id>integration-tests</id>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                            <configuration>
+                                <!-- Sets the VM argument line used when integration tests are run. -->
+                                <argLine>${failsafeArgLine}</argLine>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>install-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>deploy-sources</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.10</version>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                        <includes>**\/*.yang</includes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>unpack-shared-resources</id>
+                            <goals>
+                                <goal>unpack-dependencies</goal>
+                            </goals>
+                            <phase>initialize</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
+                    <executions>
+                        <execution>
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <tasks>
+                            <!-- flatten out structure -->
+                            <move todir="${project.build.directory}/dependency" failonerror="false">
+                                <fileset dir="${project.build.directory}/dependency"/>
+                                <mapper type="flatten"/>
+                            </move>
+                            <!-- move to yang folder -->
+                            <copy todir="${project.build.directory}/yang" failonerror="false">
+                                <fileset dir="${project.build.directory}/dependency" includes="**/*.yang"/>
+                                <mapper type="flatten"/>
+                            </copy>
+                            <!-- add in hard coded items from src/main/yang -->
+                            <copy todir="${project.build.directory}/yang" failonerror="false">
+                                <fileset dir="${project.basedir}/src/main/yang" includes="**/*.yang"/>
+                                <mapper type="flatten"/>
+                            </copy>
+                        </tasks>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.opendaylight.yangtools</groupId>
+                    <artifactId>yang-maven-plugin</artifactId>
+                    <version>${yangtools.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.mrv.yangtools</groupId>
+                            <artifactId>swagger-maven-plugin</artifactId>
+                            <version>${yang2swagger.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.fasterxml.jackson.core</groupId>
+                            <artifactId>jackson-core</artifactId>
+                            <version>${jackson.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>binding</id>
+                            <goals>
+                                <goal>generate-sources</goal>
+                            </goals>
+                            <configuration>
+                                <codeGenerators>
+                                    <generator>
+                                        <codeGeneratorClass>com.mrv.yangtools.maven.gen.swagger.MavenSwaggerGenerator</codeGeneratorClass>
+                                        <outputBaseDir>${project.build.directory}/generated-sources/swagger-maven-api-gen</outputBaseDir>
+                                        <resourceBaseDir>${project.build.directory}/yang</resourceBaseDir>
+                                        <additionalConfiguration>
+                                            <api-version>${project.version}</api-version>
+                                            <base-module>${api.name}</base-module>
+                                            <swagger-format>yaml</swagger-format>
+                                            <path-format>odl</path-format>
+                                        </additionalConfiguration>
+                                    </generator>
+                                </codeGenerators>
+                                <inspectDependencies>false</inspectDependencies>
+                                <yangFilesRootDir>${project.build.directory}/yang</yangFilesRootDir>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>io.swagger</groupId>
+                    <artifactId>swagger-codegen-maven-plugin</artifactId>
+                    <version>2.2.3</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.fasterxml.jackson.core</groupId>
+                            <artifactId>jackson-core</artifactId>
+                            <version>${jackson.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.fasterxml.jackson.core</groupId>
+                            <artifactId>jackson-databind</artifactId>
+                            <version>${jackson.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.fasterxml.jackson.core</groupId>
+                            <artifactId>jackson-annotations</artifactId>
+                            <version>${jackson.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.fasterxml.jackson.module</groupId>
+                            <artifactId>jackson-module-jaxb-annotations</artifactId>
+                            <version>${jackson.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                            <artifactId>jackson-jaxrs-base</artifactId>
+                            <version>${jackson.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                            <artifactId>jackson-jaxrs-json-provider</artifactId>
+                            <version>${jackson.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                            <configuration>
+                                <inputSpec>${project.build.directory}/generated-sources/swagger-maven-api-gen/${api.name}.yaml</inputSpec>
+                                <language>spring</language>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <processAllModules>true</processAllModules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.8.1</version>
+                <configuration>
+                    <tag>${project.artifactId}-${project.version}</tag>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
