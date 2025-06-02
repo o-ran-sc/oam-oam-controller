@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "48a9e51d_ef7f75eb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000115
+      },
+      "writtenOn": "2025-06-02T10:09:07Z",
+      "side": 1,
+      "message": "Why we need a Makefile here?\n.. other like oam I don\u0027t see this file.",
+      "revId": "ea42176603d8368dc280bfde4ee071e2c7908506",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e522f53_e03c0b18",
+        "filename": "docs/requirements-docs.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000115
+      },
+      "writtenOn": "2025-06-02T10:09:07Z",
+      "side": 1,
+      "message": "I don\u0027t think that you need git-review here.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 10
+      },
+      "revId": "ea42176603d8368dc280bfde4ee071e2c7908506",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
