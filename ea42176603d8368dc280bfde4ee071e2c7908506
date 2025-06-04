@@ -18,6 +18,24 @@
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c9b5656_8f926466",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000060
+      },
+      "writtenOn": "2025-06-04T12:26:45Z",
+      "side": 1,
+      "message": "I see the need for a make file in case there is more than on bash script to \"compile\", \"pack\" and \"test\" the function/solution - other repos are not that modern.",
+      "parentUuid": "48a9e51d_ef7f75eb",
+      "revId": "ea42176603d8368dc280bfde4ee071e2c7908506",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2e522f53_e03c0b18",
@@ -31,6 +49,30 @@
       "writtenOn": "2025-06-02T10:09:07Z",
       "side": 1,
       "message": "I don\u0027t think that you need git-review here.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 10
+      },
+      "revId": "ea42176603d8368dc280bfde4ee071e2c7908506",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2b09a387_5ed7801f",
+        "filename": "docs/requirements-docs.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000060
+      },
+      "writtenOn": "2025-06-04T12:26:45Z",
+      "side": 1,
+      "message": "well - how can ppl contribute if there is no git-review?\nOn the ohter side - it is like git - and belongs more to \"development\" infra than \"code\". - ok - this change can be reverted",
+      "parentUuid": "2e522f53_e03c0b18",
       "range": {
         "startLine": 28,
         "startChar": 0,
