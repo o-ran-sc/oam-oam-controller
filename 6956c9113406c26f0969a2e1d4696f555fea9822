@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "14549ffe_2dcce9c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000115
+      },
+      "writtenOn": "2025-06-05T12:57:42Z",
+      "side": 1,
+      "message": "Hi again, I think the direction is Ok. \nBut there are some things we should change to bring the parents into a state that we can commit the first part.\nThe changes are:\n- Please add a readme.md in the repo root and add the information:\n  - oam-controller is useing parts from onap ccsdk project\n  - License is Apache 2 according ONAP requirements\n  - \"Fork\" reference is ccsdk-parent 3.1.1: https://gerrit.onap.org/r/gitweb?p\u003dccsdk/parent.git;a\u003dtag;h\u003def4a562efe380089eb8fd34e768119f8124a506c\n- Remove parents/tools/florine2neon.sh\n\nAfter this changes we can commit the code\nAs next step there is further cleanup to do .. I will open a new issue for this points.",
+      "revId": "6956c9113406c26f0969a2e1d4696f555fea9822",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
