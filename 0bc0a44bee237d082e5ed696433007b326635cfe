@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e62fb8d2_70a03a0e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000376
+      },
+      "writtenOn": "2025-06-06T08:53:22Z",
+      "side": 1,
+      "message": "Herbert, this is a fix for the bug in GHA workflow. Please review and commit. The GHA build failed because of this bug.",
+      "revId": "0bc0a44bee237d082e5ed696433007b326635cfe",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
