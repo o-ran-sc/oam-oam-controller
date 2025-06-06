@@ -16,6 +16,23 @@
       "message": "Herbert, this is a fix for the bug in GHA workflow. Please review and commit. The GHA build failed because of this bug.",
       "revId": "0bc0a44bee237d082e5ed696433007b326635cfe",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3c973a73_da8f1a3f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000060
+      },
+      "writtenOn": "2025-06-06T09:40:55Z",
+      "side": 1,
+      "message": "@Herbert: If you agree please +2 and merge.",
+      "revId": "0bc0a44bee237d082e5ed696433007b326635cfe",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
