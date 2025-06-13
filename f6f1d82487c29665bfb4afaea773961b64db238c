@@ -1,0 +1,9 @@
+Verified+1: ORAN Required GHA <releng+oran.required.gha@linuxfoundation.org>
+Verified+1: Herbert Eiselt <herbert.eiselt@highstreet-technologies.com>
+Code-Review+2: Herbert Eiselt <herbert.eiselt@highstreet-technologies.com>
+Submitted-by: Herbert Eiselt <herbert.eiselt@highstreet-technologies.com>
+Submitted-at: Fri, 13 Jun 2025 05:46:22 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/oam/oam-controller/+/14556
+Comments-Total: 1
+Project: oam/oam-controller
+Branch: refs/heads/master
