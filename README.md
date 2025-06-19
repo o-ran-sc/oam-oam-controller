@@ -48,3 +48,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 # Important Info
 - oam-controller is using parts from onap ccsdk project
 - "Fork" reference is ccsdk-parent 3.1.1: https://gerrit.onap.org/r/gitweb?p=ccsdk/parent.git;a=tag;h=ef4a562efe380089eb8fd34e768119f8124a506c
+
+# Github Workflows
+- Github workflows will be used instead of Jenkins for CI/CD
