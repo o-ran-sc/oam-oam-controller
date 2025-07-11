@@ -69,8 +69,19 @@ jobs:
       - name: Allow replication
         run: sleep 10s
 
+  sanitize:
+    runs-on: ubuntu-latest
+    outputs:
+      sanitized_project: ${{ steps.sanitize.outputs.result }}
+    steps:
+      - name: Sanitize GERRIT_PROJECT
+        id: sanitize
+        run: echo "result=${GERRIT_PROJECT//\//-}" >> $GITHUB_OUTPUT
+        env:
+          GERRIT_PROJECT: ${{ inputs.GERRIT_PROJECT }}
+
   maven-verify:
-    needs: prepare
+    needs: [prepare, sanitize]
     # use compose-jjb-verify from the v0.4 series of releng-reusable-workflows
     # yamllint disable-line rule:line-length
     uses: lfit/releng-reusable-workflows/.github/workflows/compose-maven-verify.yaml@main
@@ -82,7 +93,7 @@ jobs:
       GERRIT_EVENT_TYPE: ${{ inputs.GERRIT_EVENT_TYPE }}
       GERRIT_PATCHSET_NUMBER: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
       GERRIT_PATCHSET_REVISION: ${{ inputs.GERRIT_PATCHSET_REVISION }}
-      GERRIT_PROJECT: ${{ inputs.GERRIT_PROJECT }}
+      GERRIT_PROJECT: ${{ github.repository_owner }}/${{ needs.sanitize.outputs.sanitized_project }}
       GERRIT_REFSPEC: ${{ inputs.GERRIT_REFSPEC }}
       JDK_VERSION: "21"
       MVN_VERSION: "3.9.6"
