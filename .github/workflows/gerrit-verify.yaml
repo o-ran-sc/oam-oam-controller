@@ -82,7 +82,7 @@ jobs:
       GERRIT_EVENT_TYPE: ${{ inputs.GERRIT_EVENT_TYPE }}
       GERRIT_PATCHSET_NUMBER: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
       GERRIT_PATCHSET_REVISION: ${{ inputs.GERRIT_PATCHSET_REVISION }}
-      GERRIT_PROJECT: ${{ inputs.GERRIT_PROJECT }}
+      GERRIT_PROJECT: ${{ github.repository_owner }}/${{ inputs.GERRIT_PROJECT }}
       GERRIT_REFSPEC: ${{ inputs.GERRIT_REFSPEC }}
       JDK_VERSION: "21"
       MVN_VERSION: "3.9.6"
