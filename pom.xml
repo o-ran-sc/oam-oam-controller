@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.o-ran-sc.oam-controller</groupId>
+    <artifactId>oam-controller</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>O-RAN-SC :: ${project.groupId} :: ${project.artifactId}</name>
+
+    <modules>
+        <module>parents</module>
+        <module>features/sdnr/wt</module>
+        <module>features/sdnr/odlux</module>
+        <module>distribution/oam-controller</module>
+        <module>distribution/oam-controller-web</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <o-ran-sc.nexus.host>nexus.o-ran-sc.org</o-ran-sc.nexus.host>
+        <o-ran-sc.nexus.staging.server-id>o-ran-sc-staging</o-ran-sc.nexus.staging.server-id>
+        <o-ran-sc.nexus.staging.profile-id>176c31dfe190a</o-ran-sc.nexus.staging.profile-id>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <processAllModules>true</processAllModules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <!-- This version supports the "deployAtEnd" parameter -->
+                <version>2.8</version>
+                <configuration>
+                    <skip/>
+                    <deployAtEnd>true</deployAtEnd>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dependency-list</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.ferstl</groupId>
+                        <artifactId>depgraph-maven-plugin</artifactId>
+                        <version>3.3.0</version>
+                        <configuration>
+                            <graphFormat>text</graphFormat>
+                            <outputFileName>direct-dependencies.txt</outputFileName>
+                            <outputDirectory>${project.basedir}</outputDirectory>
+                            <transitiveExcludes>*</transitiveExcludes>
+                            <showVersions>true</showVersions>
+                            <showGroupIds>true</showGroupIds>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <inherited>false</inherited>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>package</phase>
+                                <inherited>false</inherited>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.basedir}/direct-dependencies.txt</file>
+                                            <type>txt</type>
+                                            <classifier>dependencies</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
