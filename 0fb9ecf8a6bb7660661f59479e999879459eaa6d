@@ -1,0 +1,8 @@
+Verified+1: ORAN Required GHA <releng+oran.required.gha@linuxfoundation.org>
+Code-Review+2: Alex Stancu <alexandru.stancu@highstreet-technologies.com>
+Verified+1: Alex Stancu <alexandru.stancu@highstreet-technologies.com>
+Submitted-by: Alex Stancu <alexandru.stancu@highstreet-technologies.com>
+Submitted-at: Mon, 14 Jul 2025 14:46:39 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/oam/oam-controller/+/14712
+Project: oam/oam-controller
+Branch: refs/heads/master
