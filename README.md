@@ -53,3 +53,4 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - Github workflows will be used instead of Jenkins for CI/CD
 - 2 Github workflows are added for building the code
 - GERRIT_PROJECT needs special handling due to the repo naming convention
+- Test commit to check GHA triggering
