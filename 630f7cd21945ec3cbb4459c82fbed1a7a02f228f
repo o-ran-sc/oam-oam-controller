@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14c66d97_d1f73f6d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000376
+      },
+      "writtenOn": "2025-07-15T14:52:24Z",
+      "side": 1,
+      "message": "Hi Alex, can you submit this please?\nThanks\nRavi",
+      "revId": "630f7cd21945ec3cbb4459c82fbed1a7a02f228f",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    }
+  ]
+}
