@@ -47,7 +47,7 @@ on:
 
 concurrency:
   # yamllint disable-line rule:line-length
-  group: compose-maven-verify-${{ github.workflow }}-${{ github.event.inputs.GERRIT_CHANGE_ID || github.run_id }}
+  group: compose-make-verify-${{ github.workflow }}-${{ github.event.inputs.GERRIT_CHANGE_ID || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -84,7 +84,7 @@ jobs:
     needs: [prepare, sanitize]
     # use compose-jjb-verify from the v0.4 series of releng-reusable-workflows
     # yamllint disable-line rule:line-length
-    uses: ravipendurty/releng-reusable-workflows/.github/workflows/compose-maven-verify.yaml@main
+    uses: ravipendurty/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml@main
     with:
       GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
       GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
@@ -97,14 +97,6 @@ jobs:
       GERRIT_REFSPEC: ${{ inputs.GERRIT_REFSPEC }}
       JDK_VERSION: "21"
       MVN_VERSION: "3.9.6"
-      MVN_PROFILES: "docker"
-      MVN_PHASES: "clean install"
-      MVN_PARAMS: "-s settings.xml"
-      # yamllint disable rule:line-length
-      MVN_OPTS: >-
-        -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-        -Dmaven.repo.local=/tmp/r -Dorg.ops4j.pax.url.mvn.localRepository=/tmp/r
-        -DaltDeploymentRepository=staging::default::file:"${GITHUB_WORKSPACE}"/m2repo
       # yamllint enable rule:line-length
       ENV_VARS: ${{ toJSON(vars) }}
 
