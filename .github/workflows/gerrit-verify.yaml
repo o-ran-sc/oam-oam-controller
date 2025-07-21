@@ -51,23 +51,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clear votes
-        # yamllint disable-line rule:line-length
-        uses: lfit/gerrit-review-action@9627b9a144f2a2cad70707ddfae87c87dce60729 # v0.8
-        with:
-          host: ${{ vars.GERRIT_SERVER }}
-          username: ${{ vars.GERRIT_SSH_USER }}
-          key: ${{ secrets.GERRIT_SSH_PRIVKEY }}
-          known_hosts: ${{ vars.GERRIT_KNOWN_HOSTS }}
-          gerrit-change-number: ${{ inputs.GERRIT_CHANGE_NUMBER }}
-          gerrit-patchset-number: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
-          vote-type: clear
-          comment-only: true
-      - name: Allow replication
-        run: sleep 10s
+  # prepare:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Clear votes
+  #       # yamllint disable-line rule:line-length
+  #       uses: lfit/gerrit-review-action@9627b9a144f2a2cad70707ddfae87c87dce60729 # v0.8
+  #       with:
+  #         host: ${{ vars.GERRIT_SERVER }}
+  #         username: ${{ vars.GERRIT_SSH_USER }}
+  #         key: ${{ secrets.GERRIT_SSH_PRIVKEY }}
+  #         known_hosts: ${{ vars.GERRIT_KNOWN_HOSTS }}
+  #         gerrit-change-number: ${{ inputs.GERRIT_CHANGE_NUMBER }}
+  #         gerrit-patchset-number: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
+  #         vote-type: clear
+  #         comment-only: true
+  #     - name: Allow replication
+  #       run: sleep 10s
 
   sanitize:
     runs-on: ubuntu-latest
@@ -82,12 +82,12 @@ jobs:
 
   maven-verify:
     runs-on: ubuntu-latest
-    needs: [prepare, sanitize]
+    needs: [sanitize]
     # use compose-jjb-verify from the v0.4 series of releng-reusable-workflows
     # yamllint disable-line rule:line-length
     steps:
       - name: Build CCSDK Parents, features and distribution
-        uses: ravipendurty/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml
+        uses: ravipendurty/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml@main
         with:
           GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
           GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
@@ -103,22 +103,22 @@ jobs:
           # yamllint enable rule:line-length
           ENV_VARS: ${{ toJSON(vars) }}
 
-  vote:
-    if: ${{ always() }}
-    # yamllint enable rule:line-length
-    needs: [prepare, maven-verify]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get conclusion
-        # yamllint disable-line rule:line-length
-        uses: im-open/workflow-conclusion@e4f7c4980600fbe0818173e30931d3550801b992 # v2.2.3
-      - name: Set vote
-        # yamllint disable-line rule:line-length
-        uses: lfit/gerrit-review-action@9627b9a144f2a2cad70707ddfae87c87dce60729 # v0.8
-        with:
-          host: ${{ vars.GERRIT_SERVER }}
-          username: ${{ vars.GERRIT_SSH_USER }}
-          key: ${{ secrets.GERRIT_SSH_PRIVKEY }}
+  # vote:
+  #   if: ${{ always() }}
+  #   # yamllint enable rule:line-length
+  #   needs: [prepare, maven-verify]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Get conclusion
+  #       # yamllint disable-line rule:line-length
+  #       uses: im-open/workflow-conclusion@e4f7c4980600fbe0818173e30931d3550801b992 # v2.2.3
+  #     - name: Set vote
+  #       # yamllint disable-line rule:line-length
+  #       uses: lfit/gerrit-review-action@9627b9a144f2a2cad70707ddfae87c87dce60729 # v0.8
+  #       with:
+  #         host: ${{ vars.GERRIT_SERVER }}
+  #         username: ${{ vars.GERRIT_SSH_USER }}
+  #         key: ${{ secrets.GERRIT_SSH_PRIVKEY }}
           known_hosts: ${{ vars.GERRIT_KNOWN_HOSTS }}
           gerrit-change-number: ${{ inputs.GERRIT_CHANGE_NUMBER }}
           gerrit-patchset-number: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
