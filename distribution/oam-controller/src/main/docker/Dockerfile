@@ -24,8 +24,8 @@ RUN apk update && apk --no-cache add gcompat sudo iputils openssl bash unzip rsy
 # Enable wheel group
 RUN sed -e 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/g' -i /etc/sudoers
 # Create odl user
-RUN addgroup -S odl && adduser -S odl -G odl
-RUN addgroup odl wheel
+RUN addgroup -S odl && adduser -S odl -G odl && addgroup odl wheel
+#RUN addgroup odl wheel
 
 # copy ODL
 COPY --chown=odl:odl odl/karaf-${odl.karaf.version} $ODL_HOME
@@ -41,8 +41,11 @@ RUN rsync -a --ignore-existing /tmp/system $ODL_HOME
 #COPY  --chown=odl:odl frinx/org/opendaylight/netconf $ODL_HOME/system/org/opendaylight/netconf/
 
 COPY --chown=odl:odl system/org/apache/kafka $ODL_HOME/system/org/apache/kafka
+RUN true
 COPY --chown=odl:odl system/com/github/luben $ODL_HOME/system/com/github/luben
+RUN true
 COPY --chown=odl:odl system/org/lz4 $ODL_HOME/system/org/lz4
+RUN true
 COPY --chown=odl:odl system/org/xerial/snappy $ODL_HOME/system/org/xerial/snappy
 
 # Patch WT Apps
@@ -50,14 +53,16 @@ COPY --chown=odl:odl system/org/xerial/snappy $ODL_HOME/system/org/xerial/snappy
 #RUN rm -r $ODL_HOME/$FEATURES_SDNR
 #COPY --chown=odl:odl $FEATURES_SDNR $ODL_HOME/$FEATURES_SDNR
 # Copy scripts
+RUN true
 COPY --from=stage0 --chown=odl:odl /opt/onap /opt/onap
+RUN true
 COPY --chown=odl:odl scripts/startODL.sh /opt/onap/sdnc/bin/
+RUN true
 COPY --chown=odl:odl scripts/installCerts.py /opt/onap/sdnc/bin/
 # Copy repository
 # visualVM configuration
+RUN true
 COPY --chown=odl:odl etc $ODL_HOME/etc
-# copy bash init script into container
-COPY --chown=odl:odl scripts/.bashrc /home/odl/
 
 #Adjust repositories
 RUN sed -i -e "\|featuresRepositories|s|$|, ${SDNR_DM_REPO}|"  $ODL_HOME/etc/org.apache.karaf.features.cfg
