@@ -24,15 +24,15 @@ help:
 ## feature:             Build all features
 .PHONY: feature
 feature:
-	mvn clean install -f parents/pom.xml
-	mvn clean install -f features/sdnr/wt/pom.xml
-	mvn clean install -f features/sdnr/odlux/pom.xml
+	mvn clean install -f parents/pom.xml -s settings.xml
+	mvn clean install -f features/sdnr/wt/pom.xml -s settings.xml
+	mvn clean install -f features/sdnr/odlux/pom.xml -s settings.xml
 
 ## dist:                Build images
 .PHONY: dist
 dist:
-	mvn clean install -f distribution/oam-controller/pom.xml
-	mvn clean install -f distribution/oam-controller-web/pom.xml
+	mvn clean install -f distribution/oam-controller/pom.xml -s settings.xml
+	mvn clean install -f distribution/oam-controller-web/pom.xml -s settings.xml
 
 ## all:                 Build features and images
 .PHONY: all
