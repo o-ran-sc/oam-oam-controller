@@ -81,27 +81,24 @@ jobs:
           GERRIT_PROJECT: ${{ inputs.GERRIT_PROJECT }}
 
   maven-verify:
-    runs-on: ubuntu-latest
     needs: [sanitize]
     # use compose-jjb-verify from the v0.4 series of releng-reusable-workflows
     # yamllint disable-line rule:line-length
-    steps:
-      - name: Build CCSDK Parents, features and distribution
-        uses: ravipendurty/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml@main
-        with:
-          GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
-          GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
-          GERRIT_CHANGE_NUMBER: ${{ inputs.GERRIT_CHANGE_NUMBER }}
-          GERRIT_CHANGE_URL: ${{ inputs.GERRIT_CHANGE_URL }}
-          GERRIT_EVENT_TYPE: ${{ inputs.GERRIT_EVENT_TYPE }}
-          GERRIT_PATCHSET_NUMBER: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
-          GERRIT_PATCHSET_REVISION: ${{ inputs.GERRIT_PATCHSET_REVISION }}
-          GERRIT_PROJECT: ${{ github.repository_owner }}/${{ needs.sanitize.outputs.sanitized_project }}
-          GERRIT_REFSPEC: ${{ inputs.GERRIT_REFSPEC }}
-          JDK_VERSION: "21"
-          MVN_VERSION: "3.9.6"
-          # yamllint enable rule:line-length
-          ENV_VARS: ${{ toJSON(vars) }}
+    uses: ravipendurty/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml@main
+    with:
+      GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
+      GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
+      GERRIT_CHANGE_NUMBER: ${{ inputs.GERRIT_CHANGE_NUMBER }}
+      GERRIT_CHANGE_URL: ${{ inputs.GERRIT_CHANGE_URL }}
+      GERRIT_EVENT_TYPE: ${{ inputs.GERRIT_EVENT_TYPE }}
+      GERRIT_PATCHSET_NUMBER: ${{ inputs.GERRIT_PATCHSET_NUMBER }}
+      GERRIT_PATCHSET_REVISION: ${{ inputs.GERRIT_PATCHSET_REVISION }}
+      GERRIT_PROJECT: ${{ github.repository_owner }}/${{ needs.sanitize.outputs.sanitized_project }}
+      GERRIT_REFSPEC: ${{ inputs.GERRIT_REFSPEC }}
+      JDK_VERSION: "21"
+      MVN_VERSION: "3.9.6"
+      # yamllint enable rule:line-length
+      ENV_VARS: ${{ toJSON(vars) }}
 
   # vote:
   #   if: ${{ always() }}
