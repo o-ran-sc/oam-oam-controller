@@ -10,7 +10,7 @@
     <name>O-RAN-SC :: ${project.groupId} :: ${project.artifactId}</name>
 
     <modules>
-        <module>parents</module>
+        <!-- <module>parents</module> -->
         <module>features/sdnr/wt</module>
         <module>features/sdnr/odlux</module>
         <module>distribution/oam-controller</module>
