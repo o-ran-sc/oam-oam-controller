@@ -11,7 +11,7 @@
     <description>Creates SDN Controller WebUI Docker container</description>
 
     <properties>
-        <base.image.repo>docker.io/bitnami/nginx:1.21-debian-10</base.image.repo>
+        <base.image.repo>docker.io/bitnami/nginx:1.25-debian-12</base.image.repo>
         <image.name>o-ran-sc/sdnc-web-image</image.name>
         <sdnc.project.version>${project.version}</sdnc.project.version>
         <ccsdk.features.version>1.7.0-SNAPSHOT</ccsdk.features.version>
