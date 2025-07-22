@@ -1,0 +1,11 @@
+Verified+1: ORAN Jobbuilder <releng+oran-jobbuilder@linuxfoundation.org>
+Code-Review+1: Ravi Pendurty <ravi.pendurty@highstreet-technologies.com>
+Verified+1: Martin Skorupski <martin.skorupski@highstreet-technologies.com>
+Verified+1: ORAN Required GHA <releng+oran.required.gha@linuxfoundation.org>
+Code-Review+2: Martin Skorupski <martin.skorupski@highstreet-technologies.com>
+Submitted-by: Martin Skorupski <martin.skorupski@highstreet-technologies.com>
+Submitted-at: Tue, 22 Jul 2025 12:03:55 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/oam/oam-controller/+/14731
+Comments-Total: 1
+Project: oam/oam-controller
+Branch: refs/heads/master
