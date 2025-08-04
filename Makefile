@@ -12,28 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+.PHONY: help parents features-wt features-odlux dist all
+
 ## help:                Show the help.
-.PHONY: help
 help:
 	@echo "Usage: make <target>"
 	@echo ""
 	@echo "Targets:"
 	@fgrep "##" Makefile | fgrep -v fgrep | sed 's/##/ -/g'
 
+## parents:				Build parents
+parents:
+	mvn clean install -f parents/pom.xml -s settings.xml
 
-## feature:             Build all features 
-.PHONY: feature
-feature:
-	mvn clean install -f parents/pom.xml
-	mvn clean install -f features/sdnr/wt/pom.xml
-	mvn clean install -f features/sdnr/odlux/pom.xml
+## features-wt:         Build wt features
+features-wt:
+	mvn clean install -f features/sdnr/wt/pom.xml -s settings.xml
+
+## features-odlux:      Build odlux features
+features-odlux:
+	mvn clean install -f features/sdnr/odlux/pom.xml -s settings.xml
 
 ## dist:                Build images
-.PHONY: dist
 dist:
-	mvn clean install -f distribution/oam-controller/pom.xml
-	mvn clean install -f distribution/oam-controller-web/pom.xml
+	mvn clean install -f distribution/oam-controller/pom.xml -s settings.xml
+	mvn clean install -f distribution/oam-controller-web/pom.xml -s settings.xml
+
+## deploy				Deploy artifacts to some artifact repository like nexus, jfrog, github packages etc.
+deploy:
+	mvn clean deploy -f parents/pom.xml -s settings.xml
+	mvn clean deploy -f features/sdnr/wt/pom.xml -s settings.xml
+	mvn clean deploy -f features/sdnr/odlux/pom.xml -s settings.xml
+	mvn clean deploy -f distribution/oam-controller/pom.xml -s settings.xml
 
 ## all:                 Build features and images
-.PHONY: all
-all: feature dist
+build: parents features-wt features-odlux dist
+
