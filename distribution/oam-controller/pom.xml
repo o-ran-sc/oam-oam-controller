@@ -36,8 +36,19 @@
         <opendaylight.root>opt/opendaylight</opendaylight.root>
         <docker.push.phase>deploy</docker.push.phase>
         <docker.verbose>true</docker.verbose>
-
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+            <url>${o-ran-sc.nexus.release-url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>${o-ran-sc.nexus.snapshot-url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>${ccsdk.feature.groupid}</groupId>
