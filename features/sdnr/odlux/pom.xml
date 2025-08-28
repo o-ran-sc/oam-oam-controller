@@ -30,6 +30,17 @@
     <name>ccsdk-sdnr :: micro-services odlux only</name>
     <description>SDN-R micro-services odlux only</description>
 
+    <distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <modules>
         <module>helpserver</module>
         <module>odlux</module>
