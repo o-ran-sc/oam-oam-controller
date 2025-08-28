@@ -18,81 +18,18 @@
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 	<profiles>
 		<profile>
-			<id>onap-settings</id>
+			<id>o-ran-sc-settings</id>
 			<properties>
-				<onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
-				<onap.nexus.rawrepo.baseurl.upload>https://nexus.onap.org/content/sites/raw</onap.nexus.rawrepo.baseurl.upload>
-				<onap.nexus.rawrepo.baseurl.download>https://nexus.onap.org/service/local/repositories/raw/content</onap.nexus.rawrepo.baseurl.download>
-				<onap.nexus.rawrepo.serverid>ecomp-raw</onap.nexus.rawrepo.serverid>
+				<o-ran-sc.nexus.url>https://nexus.o-ran-sc.org</o-ran-sc.nexus.url>
+				<o-ran-sc.nexus.rawrepo.baseurl.upload>https://nexus.o-ran-sc.org/content/sites/raw</o-ran-sc.nexus.rawrepo.baseurl.upload>
+				<o-ran-sc.nexus.rawrepo.baseurl.download>https://nexus.o-ran-sc.org/service/local/repositories/raw/content</o-ran-sc.nexus.rawrepo.baseurl.download>
+				<o-ran-sc.nexus.rawrepo.serverid>ecomp-raw</o-ran-sc.nexus.rawrepo.serverid>
 				<!-- properties for Nexus Docker registry -->
-				<onap.nexus.dockerregistry.daily>nexus3.onap.org:10003</onap.nexus.dockerregistry.daily>
-				<onap.nexus.dockerregistry.release>nexus3.onap.org:10002</onap.nexus.dockerregistry.release>
-				<docker.pull.registry>nexus3.onap.org:10001</docker.pull.registry>
-				<docker.push.registry>nexus3.onap.org:10003</docker.push.registry>
+				<o-ran-sc.nexus.dockerregistry.daily>nexus3.o-ran-sc.org:10003</o-ran-sc.nexus.dockerregistry.daily>
+				<o-ran-sc.nexus.dockerregistry.release>nexus3.o-ran-sc.org:10002</o-ran-sc.nexus.dockerregistry.release>
+				<docker.pull.registry>nexus3.o-ran-sc.org:10001</docker.pull.registry>
+				<docker.push.registry>nexus3.o-ran-sc.org:10003</docker.push.registry>
 			</properties>
-		</profile>
-		<profile>
-			<id>github-packages</id>
-			<repositories>
-				<repository>
-					<id>github</id>
-					<name>github-packages</name>
-					<url>https://maven.pkg.github.com/o-ran-sc/netconf</url>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>github</id>
-					<name>github-packages</name>
-					<url>https://maven.pkg.github.com/o-ran-sc/netconf</url>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-				<profile>
-			<id>github-packages</id>
-			<repositories>
-				<repository>
-					<id>github</id>
-					<name>github-packages</name>
-					<url>https://maven.pkg.github.com/o-ran-sc/ccsdk-features</url>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>github</id>
-					<name>github-packages</name>
-					<url>https://maven.pkg.github.com/o-ran-sc/ccsdk-features</url>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-		<profile>
-			<id>onap-snapshots</id>
-			<repositories>
-				<repository>
-					<id>onap-snapshots</id>
-					<name>onap-snapshots</name>
-					<url>https://nexus.onap.org/content/repositories/snapshots/</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<id>onap-snapshots</id>
-					<name>onap-snapshots</name>
-					<url>https://nexus.onap.org/content/repositories/snapshots/</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
 		</profile>
 		<profile>
 			<id>onap-releases</id>
@@ -124,16 +61,74 @@
 			</pluginRepositories>
 		</profile>
 		<profile>
-			<id>onap-public</id>
+			<id>o-ran-sc-snapshots</id>
+			<repositories>
+				<repository>
+					<id>o-ran-sc-snapshots</id>
+					<name>o-ran-sc-snapshots</name>
+					<url>https://nexus.o-ran-sc.org/content/repositories/snapshots/</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>o-ran-sc-snapshots</id>
+					<name>o-ran-sc-snapshots</name>
+					<url>https://nexus.o-ran-sc.org/content/repositories/snapshots/</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+		<profile>
+			<id>o-ran-sc-releases</id>
+			<repositories>
+				<repository>
+					<id>o-ran-sc-releases</id>
+					<name>o-ran-sc-releases</name>
+					<url>https://nexus.o-ran-sc.org/content/repositories/releases/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>o-ran-sc-releases</id>
+					<name>o-ran-sc-releases</name>
+					<url>https://nexus.o-ran-sc.org/content/repositories/releases/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+		<profile>
+			<id>o-ran-sc-public</id>
 			<repositories>
 				<repository>
 					<id>central</id>
 					<url>https://repo1.maven.org/maven2/</url>
 				</repository>
 				<repository>
-					<id>onap-public</id>
-					<name>onap-public</name>
-					<url>https://nexus.onap.org/content/repositories/public/</url>
+					<id>o-ran-sc-public</id>
+					<name>o-ran-sc-public</name>
+					<url>https://nexus.o-ran-sc.org/content/repositories/public/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -148,9 +143,9 @@
 					<url>https://repo1.maven.org/maven2/</url>
 				</pluginRepository>
 				<pluginRepository>
-					<id>onap-public</id>
-					<name>onap-public</name>
-					<url>https://nexus.onap.org/content/repositories/public/</url>
+					<id>o-ran-sc-public</id>
+					<name>o-ran-sc-public</name>
+					<url>https://nexus.o-ran-sc.org/content/repositories/public/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -162,17 +157,27 @@
 		</profile>
 	</profiles>
 	<activeProfiles>
-		<activeProfile>github-packages</activeProfile>
-		<activeProfile>onap-settings</activeProfile>
-		<activeProfile>onap-snapshots</activeProfile>
 		<activeProfile>onap-releases</activeProfile>
-		<activeProfile>onap-public</activeProfile>
+		<activeProfile>o-ran-sc-settings</activeProfile>
+		<activeProfile>o-ran-sc-snapshots</activeProfile>
+		<activeProfile>o-ran-sc-releases</activeProfile>
+		<activeProfile>o-ran-sc-public</activeProfile>
 	</activeProfiles>
 	<servers>
 		<server>
-			<id>github</id>
-			<username>o-ran-sc</username>
-			<password>${env.GITHUB_TOKEN}</password>
-		</server>
+            <id>nexus3.o-ran-sc.org</id>
+            <username>oam-oam-controller</username>
+            <password>${env.NEXUS_PASSWORD}</password>
+        </server>
+        <server>
+            <id>o-ran-sc-releases</id>
+            <username>oam-oam-controller</username>
+            <password>${env.NEXUS_PASSWORD}</password>
+        </server>
+        <server>
+            <id>o-ran-sc-snapshots</id>
+            <username>oam-oam-controller</username>
+            <password>${env.NEXUS_PASSWORD}</password>
+        </server>
 	</servers>
 </settings>
