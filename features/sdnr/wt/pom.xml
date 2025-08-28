@@ -21,18 +21,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <dependencies>
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-topology</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.o-ran-sc.oam-controller.features.sdnr.wt</groupId>
-            <artifactId>sdnr-wt-data-provider-model</artifactId>
-            <version>1.8.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
 
     <parent>
         <groupId>org.o-ran-sc.oam-controller.parent</groupId>
@@ -49,6 +37,17 @@
     <name>ccsdk-sdnr-wireless transport :: micro-services</name>
     <description>SDN-R wireless transport micro-services</description>
 
+    <distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+            <url>${o-ran-sc.nexus.release-url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>${o-ran-sc.nexus.snapshot-url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <modules>
         <module>common</module>
         <module>common-yang</module>
@@ -62,4 +61,40 @@
         <module>oauth-provider</module>
         <module>featureaggregator</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.opendaylight.mdsal.model</groupId>
+            <artifactId>ietf-topology</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.o-ran-sc.oam-controller.features.sdnr.wt</groupId>
+            <artifactId>sdnr-wt-data-provider-model</artifactId>
+            <version>1.8.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+ 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <deployAtEnd>true</deployAtEnd>
+                    <skip>false</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

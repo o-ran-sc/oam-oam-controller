@@ -23,6 +23,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+        <artifactId>oparent</artifactId>
+        <version>3.0.2-SNAPSHOT</version>
+    </parent>
+
     <groupId>org.o-ran-sc.oam-controller.features.sdnr.odlux</groupId>
     <artifactId>sdnr-odlux-framework</artifactId>
     <version>1.7.0-SNAPSHOT</version>
@@ -231,24 +237,12 @@
                             <value>${odlux.apps.inventoryApp.buildno}</value>
                         </replacement>
                         <replacement>
-                            <token>##odlux.apps.microwaveApp.buildno##</token>
-                            <value>${odlux.apps.microwaveApp.buildno}</value>
-                        </replacement>
-                        <replacement>
                             <token>##odlux.apps.maintenanceApp.buildno##</token>
                             <value>${odlux.apps.maintenanceApp.buildno}</value>
                         </replacement>
                         <replacement>
                             <token>##odlux.apps.mediatorApp.buildno##</token>
                             <value>${odlux.apps.mediatorApp.buildno}</value>
-                        </replacement>
-                        <replacement>
-                            <token>##odlux.apps.networkMapApp.buildno##</token>
-                            <value>${odlux.apps.networkMapApp.buildno}</value>
-                        </replacement>
-                        <replacement>
-                            <token>##odlux.apps.siteManagerApp.buildno##</token>
-                            <value>${odlux.apps.siteManagerApp.buildno}</value>
                         </replacement>
                         <replacement>
                             <token>##odlux.apps.permanceHistoryApp.buildno##</token>

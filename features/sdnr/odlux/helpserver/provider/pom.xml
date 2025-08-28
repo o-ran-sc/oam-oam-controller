@@ -42,6 +42,17 @@
 		<junit.version>4.13.2</junit.version>
 	</properties>
 
+ 	<distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
