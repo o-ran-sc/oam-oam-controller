@@ -1,0 +1,8 @@
+Verified+1: ORAN Required GHA <releng+oran.required.gha@linuxfoundation.org>
+Verified+1: Ravi Pendurty <ravi.pendurty@highstreet-technologies.com>
+Code-Review+2: Ravi Pendurty <ravi.pendurty@highstreet-technologies.com>
+Submitted-by: Ravi Pendurty <ravi.pendurty@highstreet-technologies.com>
+Submitted-at: Thu, 04 Sep 2025 08:10:20 +0000
+Reviewed-on: https://gerrit.o-ran-sc.org/r/c/oam/oam-controller/+/14869
+Project: oam/oam-controller
+Branch: refs/heads/master
