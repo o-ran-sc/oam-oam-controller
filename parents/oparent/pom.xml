@@ -9,7 +9,7 @@
         <relativePath/>
     </parent> -->
 
-    <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+    <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
     <artifactId>oparent</artifactId>
     <version>3.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -96,7 +96,7 @@
             <dependency>
                 <!-- keep groupId and version as plain and not as var,
                 otherwise ccsdk/distribution/dependencies is not resolving correctly -->
-                <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+                <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
                 <artifactId>dependencies-bom</artifactId>
                 <version>3.0.2-SNAPSHOT</version>
                 <type>pom</type>

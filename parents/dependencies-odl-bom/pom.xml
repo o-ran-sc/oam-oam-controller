@@ -9,7 +9,7 @@
         <relativePath />
     </parent>
 
-    <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+    <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
     <artifactId>dependencies-odl-bom</artifactId>
     <version>3.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>

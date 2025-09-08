@@ -41,11 +41,11 @@
     <distributionManagement>
         <repository>
             <id>o-ran-sc-releases</id>
-            <url>${o-ran-sc.nexus.release-url}</url>
+            <url>https://nexus.o-ran-sc.org/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
             <id>o-ran-sc-snapshots</id>
-            <url>${o-ran-sc.nexus.snapshot-url}</url>
+            <url>https://nexus.o-ran-sc.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 

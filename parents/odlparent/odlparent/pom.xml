@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+    <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
     <artifactId>odlparent</artifactId>
     <version>3.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -190,14 +190,14 @@
             parent pom, inherited value takes precedence.  This seems more like
             a bug than a feature, but this is how maven 3.6 works -->
             <dependency>
-                <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+                <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
                 <artifactId>dependencies-odl-bom</artifactId>
                 <version>3.0.2-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+                <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
                 <artifactId>dependencies-bom</artifactId>
                 <version>3.0.2-SNAPSHOT</version>
                 <type>pom</type>

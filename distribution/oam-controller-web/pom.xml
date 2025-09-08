@@ -24,7 +24,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.o-ran-sc.oam-controller.features.sdnr.odlux</groupId>
+            <groupId>org.o-ran-sc.oam-oam-controller.features.sdnr.odlux</groupId>
             <artifactId>sdnr-odlux-installer</artifactId>
             <version>${ccsdk.features.version}</version>
             <type>zip</type>

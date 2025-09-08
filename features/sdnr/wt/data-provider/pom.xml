@@ -27,13 +27,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+        <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
         <version>3.0.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
-    <groupId>org.o-ran-sc.oam-controller.features.sdnr.wt</groupId>
+    <groupId>org.o-ran-sc.oam-oam-controller.features.sdnr.wt</groupId>
     <artifactId>sdnr-wt-data-provider-top</artifactId>
     <version>1.8.0-SNAPSHOT</version>
     <packaging>pom</packaging>

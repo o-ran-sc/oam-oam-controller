@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>org.o-ran-sc.oam-controller.parent</groupId>
+    <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
     <artifactId>${odlparent.artifactId}</artifactId>
     <version>${project.version}</version>
     <packaging>pom</packaging>
