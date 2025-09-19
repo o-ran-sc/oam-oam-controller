@@ -16,6 +16,23 @@
       "message": "Hi, \nIncluded parents and a github workflow to build the parents. The artifacts will be pushed to github packages for the time being. Pushing artifacts into nexus repo is a later step.\nPlease review and submit if all good.\nRegards,\nRavi",
       "revId": "804d724f2fda15d097eba58fd9ef2460a8071dad",
       "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6f34921e_e1dd207d",
+        "filename": "parents/releases/2.5.4.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000060
+      },
+      "writtenOn": "2025-09-19T09:17:47Z",
+      "side": 1,
+      "message": "Do we need parents for 2.5.4 and previous - I think 2.6.0 and beyond should be sufficient - right?",
+      "revId": "804d724f2fda15d097eba58fd9ef2460a8071dad",
+      "serverId": "84e4e190-e623-4c37-9eda-58b1937c1b53"
     }
   ]
 }
