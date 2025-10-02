@@ -76,15 +76,30 @@ jobs:
     steps:
       - name: Sanitize GERRIT_PROJECT
         id: sanitize
-        run: echo "result=${GERRIT_PROJECT//\//-}" >> $GITHUB_OUTPUT
+        run: echo "result=${GERRIT_PROJECT//\//-}" >> "$GITHUB_OUTPUT"
         env:
           GERRIT_PROJECT: ${{ inputs.GERRIT_PROJECT }}
 
-  maven-merge:
+  load-secrets:
     needs: [notify, sanitize]
+    runs-on: ubuntu-latest
+    outputs:
+      nexus-password: ${{ steps.load_secrets.outputs.NEXUS_PASSWORD }}
+    steps:
+      - name: Load secrets from 1Password
+        id: load_secrets
+        # yamllint disable-line rule:line-length
+        uses: 1password/load-secrets-action@13f58eec611f8e5db52ec16247f58c508398f3e6 # v3.0.0
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          NEXUS_PASSWORD: op://6n4qm2onchsinyyeuxmcfbo7ne/oam-oam-controller/password
+
+  maven-merge:
+    needs: [notify, sanitize, load-secrets]
+    # yamllint disable-line rule:line-length
     uses: lfit/releng-reusable-workflows/.github/workflows/compose-make-merge.yaml@f318aaac9f4fce73a8059fe95ba9080833e018c2
     secrets:                                                 # forward secrets
-      NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      NEXUS_PASSWORD: ${{ needs.load-secrets.outputs.nexus-password }}
     with:
       GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
       GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
@@ -95,11 +110,11 @@ jobs:
 
   report-status:
     if: ${{ always() }}
-    needs: [notify, sanitize, maven-merge]
+    needs: [notify, sanitize, load-secrets, maven-merge]
     runs-on: ubuntu-latest
     steps:
       - name: Get workflow conclusion
-        uses: technote-space/workflow-conclusion-action@v3
+        uses: technote-space/workflow-conclusion-action@45ce8e0eb155657ab8ccf346ade734257fd196a5 # v3.0.3
       - name: Report workflow conclusion
         # yamllint disable-line rule:line-length
         uses: lfit/gerrit-review-action@9627b9a144f2a2cad70707ddfae87c87dce60729 # v0.8
