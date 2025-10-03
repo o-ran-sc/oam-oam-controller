@@ -84,7 +84,7 @@ jobs:
     needs: [notify, sanitize]
     runs-on: ubuntu-latest
     outputs:
-      nexus-password: ${{ steps.load_secrets.outputs.NEXUS_PASSWORD }}
+      nexus_password: ${{ steps.load_secrets.outputs.NEXUS_PASSWORD }}
     steps:
       - name: Load secrets from 1Password
         id: load_secrets
@@ -99,7 +99,7 @@ jobs:
     # yamllint disable-line rule:line-length
     uses: lfit/releng-reusable-workflows/.github/workflows/compose-make-merge.yaml@f318aaac9f4fce73a8059fe95ba9080833e018c2
     secrets:                                                 # forward secrets
-      NEXUS_PASSWORD: ${{ needs.load-secrets.outputs.NEXUS_PASSWORD }}
+      NEXUS_PASSWORD: ${{ needs.load-secrets.outputs.nexus_password }}
     with:
       GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
       GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
