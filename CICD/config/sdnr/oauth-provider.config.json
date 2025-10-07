@@ -1,0 +1,22 @@
+{
+    "tokenSecret": "secret",
+    "tokenIssuer": "onap.sdnc",
+    "publicUrl": "http://172.18.0.4:8080",
+    "redirectUri": "/odlux/index.html#/oauth?token=",
+    "supportOdlUsers": "true",
+    "providers": [
+{
+			"id": "identity",
+			"type": "KEYCLOAK",
+			"url": "https://identity.smo-int-1.t3.lab.osn-lab.com",
+			"clientId": "odlux.app",
+			"secret": "2a64fdca-c205-4b52-9f58-195ccc142ddb",
+			"scope": "openid",
+			"title": "ONAP-IDENTITY",
+			"roleMapping": {
+				"administration": "admin"
+			},
+			"realmName": "onap",
+            "trustAll": "true"
+		}]
+}

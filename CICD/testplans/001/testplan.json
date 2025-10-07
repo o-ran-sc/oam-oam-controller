@@ -1,0 +1,21 @@
+{
+    "description": "Test case to mount a device via TLS and validate the ConnectionStatus",
+    "plan-id": "001",
+    "input": { 
+        "reqType": "PUT",
+        "reqEndPoint": "/rests/data/network-topology:network-topology/topology=topology-netconf/node=CICD-NON-CALLHOME-TLS-NODE",
+        "reqPayloadFile" : "001/CREATE-MOUNTPOINT-TLS.json"
+    },
+    "expectedRespCode": 201,
+    "validation": {
+        "reqType": "GET",
+        "reqEndPoint": "/rests/data/network-topology:network-topology/topology=topology-netconf/node=CICD-NON-CALLHOME-TLS-NODE/netconf-node-topology:netconf-node/",
+        "criteria": {
+            "connection-status": "connected"
+        }
+    },
+    "cleanup": {
+        "reqType": "DELETE",
+        "reqEndPoint": "/rests/data/network-topology:network-topology/topology=topology-netconf/node=CICD-NON-CALLHOME-TLS-NODE"
+    }
+}

@@ -25,7 +25,7 @@ buildNumber.properties
 *.pyc
 append_to_etc_hosts.txt
 
-*/**/bin/
+#*/**/bin/
 
 # Maven
 target/
@@ -54,38 +54,12 @@ venv
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 
-# VES related
-*/**/json/examples
-*/**/__pycache__
-*.log
-
-# avoid copyright issues with 3GPP
-*/**/3gpp/**/*.yaml
-
 # node js
 node_modules
 package-lock.json
 
-# wireshark
-.cache
-
 # ODLUX cache
 */**/O D L UX*
 
-# nodered
-*.backup
-
-# container-analyis
-*.sbom.spdx.json
-*.vulnerabilities.vex.json
-
-# jenkins
-*/**/apps/jenkins/*
-
-# wireshark
-*/**/apps/wireshark/*
-
-# documentation
-.tox
-docs/_build/
-ci-management/
+#tmp directory
+CICD/tmp

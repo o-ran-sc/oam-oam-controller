@@ -1,0 +1,24 @@
+{
+    "network-topology:node": [
+        {
+            "node-id": "CICD-NON-CALLHOME-TLS-NODE",
+            "netconf-node-topology:netconf-node": {
+                "port": 65131,
+                "host": "10.20.11.161",
+                "key-based": {
+                   "username": "netconf",
+                   "key-id": "ODL_private_key_1"
+                },
+                "tcp-only": "false",
+                "reconnect-on-changed-schema": "false",
+                "connection-timeout-millis": 20000,
+                "max-connection-attempts": 100,
+                "protocol": {
+                   "name": "TLS",
+                   "key-id": ["ODL_private_key_1", "ODL_private_key_0"]
+                },
+                "keepalive-delay": 120
+            }
+        }
+    ]
+}

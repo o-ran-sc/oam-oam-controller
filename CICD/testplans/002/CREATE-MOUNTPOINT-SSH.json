@@ -1,0 +1,21 @@
+{
+    "network-topology:node": [
+        {
+            "node-id": "CICD-NON-CALLHOME-SSH-NODE",
+            "netconf-node-topology:netconf-node": {
+                "port": 8300,
+                "host": "10.20.11.161",
+                "login-password-unencrypted": {
+                    "username": "netconf",
+                    "password": "netconf!"
+                },
+                "tcp-only": "false",
+                "reconnect-on-changed-schema": "false",
+                "connection-timeout-millis": 20000,
+                "max-connection-attempts": 100,
+               
+                "keepalive-delay": 120
+            }
+        }
+    ]
+}

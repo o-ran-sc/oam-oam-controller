@@ -1,0 +1,21 @@
+{
+    "description": "Test case to mount a device via SSH and validate the ConnectionStatus",
+    "plan-id": "002",
+    "input": { 
+        "reqType": "PUT",
+        "reqEndPoint": "/rests/data/network-topology:network-topology/topology=topology-netconf/node=CICD-NON-CALLHOME-SSH-NODE",
+        "reqPayloadFile" : "002/CREATE-MOUNTPOINT-SSH.json"
+    },
+    "expectedRespCode": 201,
+    "validation": {
+        "reqType": "GET",
+        "reqEndPoint": "/rests/data/network-topology:network-topology/topology=topology-netconf/node=CICD-NON-CALLHOME-SSH-NODE/netconf-node-topology:netconf-node/",
+        "criteria": {
+            "connection-status": "connected"
+        }
+    },
+    "cleanup": {
+        "reqType": "DELETE",
+        "reqEndPoint": "/rests/data/network-topology:network-topology/topology=topology-netconf/node=CICD-NON-CALLHOME-SSH-NODE"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "description": "Test case to validate a device mounted via callhome SSH",
+    "plan-id": "004",
+    "validation": {
+        "reqType": "GET",
+        "reqEndPoint": "/rests/data/network-topology:network-topology/topology=topology-netconf/node=CICD-CALLHOME-SSH-NODE/netconf-node-topology:netconf-node/",
+        "criteria": {
+            "connection-status": "connected"
+        }
+    }
+}

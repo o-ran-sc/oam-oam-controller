@@ -1,0 +1,107 @@
+################################################################################
+# Copyright 2025 highstreet technologies GmbH
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+services:
+  pynts-ssh:
+    image: pynts-o-ru-mplane:${NTS_VERSION}
+    container_name: pynts-ssh
+    hostname: pynts-ssh
+    privileged: true
+    environment:
+      - ENDPOINT_COUNT=1
+
+      - SDNR_RESTCONF_URL=http://172.18.0.3:8181
+      - SDNR_USERNAME=admin
+      - SDNR_PASSWORD=admin
+    ports:
+      - "8300:830"
+      - "65130:6513"
+    volumes:
+      - ./o-ru-mplane/data:/data
+      - ./o-ru-mplane/src:/app/extensions/o-ru-mplane
+      - ./o-ru-mplane/data/ietf-netconf-server-ssh-listen.json:/data/ietf-netconf-server-running.json
+    networks:
+      CICD-Network:
+        ipv4_address: 172.18.0.10
+
+  pynts-tls:
+    image: pynts-o-ru-mplane:${NTS_VERSION}
+    container_name: pynts-tls
+    hostname: pynts-tls
+    privileged: true
+    environment:
+      - ENDPOINT_COUNT=1
+
+      - SDNR_RESTCONF_URL=http://172.18.0.3:8181
+      - SDNR_USERNAME=admin
+      - SDNR_PASSWORD=admin
+    ports:
+      - "8301:830"
+      - "65131:6513"
+    volumes:
+      - ./o-ru-mplane/data:/data
+      - ./o-ru-mplane/src:/app/extensions/o-ru-mplane
+      - ./o-ru-mplane/data/ietf-netconf-server-tls-listen.json:/data/ietf-netconf-server-running.json
+    networks:
+      CICD-Network:
+        ipv4_address: 172.18.0.11
+
+  pynts-callhome-tls:
+    image: pynts-o-ru-mplane:${NTS_VERSION}
+    container_name: pynts-callhome-tls
+    hostname: CICD-CALLHOME-TLS-NODE
+    privileged: true
+    environment:
+      - ENDPOINT_COUNT=1
+      - SDNR_CERTIFICATE_MARKERS=True
+      - SDNR_RESTCONF_URL=http://172.18.0.3:8181
+      - SDNR_USERNAME=admin
+      - SDNR_PASSWORD=admin
+    ports:
+      - "8302:830"
+      - "65132:6513"
+    volumes:
+      - ./o-ru-mplane/data:/data
+      - ./o-ru-mplane/src:/app/extensions/o-ru-mplane
+      - ./o-ru-mplane/data/ietf-netconf-server-tls-callhome.json:/data/ietf-netconf-server-running.json
+    networks:
+      CICD-Network:
+        ipv4_address: 172.18.0.12
+
+  pynts-callhome-ssh:
+    image: pynts-o-ru-mplane:${NTS_VERSION}
+    container_name: pynts-callhome-ssh
+    hostname: CICD-CALLHOME-SSH-NODE
+    privileged: true
+    environment:
+      - ENDPOINT_COUNT=1
+
+      - SDNR_RESTCONF_URL=http://172.18.0.3:8181
+      - SDNR_USERNAME=admin
+      - SDNR_PASSWORD=admin
+    ports:
+      - "8303:830"
+      - "65133:6513"
+    volumes:
+      - ./o-ru-mplane/data:/data
+      - ./o-ru-mplane/src:/app/extensions/o-ru-mplane
+      - ./o-ru-mplane/data/ietf-netconf-server-ssh-callhome.json:/data/ietf-netconf-server-running.json
+    networks:
+      CICD-Network:
+        ipv4_address: 172.18.0.13
+
+networks:
+  CICD-Network:
+    external: true

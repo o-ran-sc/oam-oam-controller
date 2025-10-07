@@ -1,0 +1,9 @@
+{
+    "sdnrHost": "172.18.0.3",
+    "sdnrPort": 8181,
+    "basicAuth": true,
+    "credentials": {
+        "sdnrUsername": "admin",
+        "sdnrPassword": "admin"
+    }
+}

@@ -82,19 +82,29 @@ jobs:
 
   maven-verify:
     needs: [prepare, sanitize]
-    # use compose-jjb-verify from the v0.4 series of releng-reusable-workflows
-    # yamllint disable-line rule:line-length
-    uses: lfit/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml@f318aaac9f4fce73a8059fe95ba9080833e018c2
-    with:
-      GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
-      GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
-      GERRIT_PROJECT: ${{ github.repository_owner }}/${{ needs.sanitize.outputs.sanitized_project }}
-      GERRIT_REFSPEC: ${{ inputs.GERRIT_REFSPEC }}
-      JDK_VERSION: "21"
-      MVN_VERSION: "3.9.6"
-      MAKE_TARGETS: "build"
-      # yamllint enable rule:line-length
-      ENV_VARS: ${{ toJSON(vars) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run make
+        # yamllint disable-line rule:line-length
+        uses: lfit/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml@f318aaac9f4fce73a8059fe95ba9080833e018c2
+        with:
+          GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
+          GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
+          GERRIT_PROJECT: ${{ github.repository_owner }}/${{ needs.sanitize.outputs.sanitized_project }}
+          GERRIT_REFSPEC: ${{ inputs.GERRIT_REFSPEC }}
+          JDK_VERSION: "21"
+          MVN_VERSION: "3.9.6"
+          MAKE_TARGETS: "build"
+          # yamllint enable rule:line-length
+          ENV_VARS: ${{ toJSON(vars) }}
+      - name: Run tests
+        run: CICD/bin/setup.sh 
+      - name: Print test log
+        if: always()
+        run: |
+          echo "Test log dump - START"
+          cat CICD/log/testsuite.log
+          echo "Test log dump - END"
 
   vote:
     if: ${{ always() }}

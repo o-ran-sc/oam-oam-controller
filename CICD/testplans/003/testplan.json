@@ -1,0 +1,11 @@
+{
+    "description": "Test case to validate a device mounted via callhome TLS",
+    "plan-id": "003",
+    "validation": {
+        "reqType": "GET",
+        "reqEndPoint": "/rests/data/network-topology:network-topology/topology=topology-netconf/node=CICD-CALLHOME-TLS-NODE/netconf-node-topology:netconf-node/",
+        "criteria": {
+            "connection-status": "connected"
+        }
+    }
+}
