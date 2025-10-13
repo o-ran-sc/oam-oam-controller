@@ -95,7 +95,7 @@ jobs:
       # yamllint enable rule:line-length
       ENV_VARS: ${{ toJSON(vars) }}
       SAVE_DOCKER_ARTIFACTS: true
-      DOCKER_ARTIFACTS_TO_SAVE: "o-ran-sc/oam-oam-controller/sdnr-image:latest, o-ran-sc/oam-oam-controller/sdnr-web-image:latest"
+      DOCKER_ARTIFACTS_TO_SAVE: "o-ran-sc/oam-oam-controller/sdnr-image:latest o-ran-sc/oam-oam-controller/sdnr-web-image:latest"
       
   vote:
     if: ${{ always() }}
