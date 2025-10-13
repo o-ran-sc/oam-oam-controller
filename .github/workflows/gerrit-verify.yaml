@@ -96,7 +96,43 @@ jobs:
       ENV_VARS: ${{ toJSON(vars) }}
       SAVE_DOCKER_ARTIFACTS: true
       DOCKER_ARTIFACTS_TO_SAVE: "o-ran-sc/oam-oam-controller/sdnr-image:latest o-ran-sc/oam-oam-controller/sdnr-web-image:latest"
+  
+  deploy-test:
+    needs: [maven-verify]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download docker artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Load Docker image(s)
+        run: docker load -i docker-images.tar
       
+      - name: Checkout code
+        uses: lfit/checkout-gerrit-change-action@54d751e8bd167bc91f7d665dabe33fae87aaaa63 # v0.9
+        with:
+          gerrit-refspec: ${{ inputs.GERRIT_REFSPEC }}
+          gerrit-url: ${{ vars.GERRIT_URL }}
+          repository: ${{ inputs.GERRIT_PROJECT }}
+          delay: "0s"
+
+      - name: Display structure of checkedout files
+        run: ls -R
+
+      - name: Run Tests
+        run: CICD/bin/setup.sh
+
+      - name: Print test log
+        if: always()
+        run: |
+          echo "Test log dump - START"
+          cat CICD/log/testsuite.log
+          echo "Test log dump - END"
+        
   vote:
     if: ${{ always() }}
     # yamllint enable rule:line-length
