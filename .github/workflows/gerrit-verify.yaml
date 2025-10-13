@@ -98,7 +98,7 @@ jobs:
       DOCKER_ARTIFACTS_TO_SAVE: "o-ran-sc/oam-oam-controller/sdnr-image:latest o-ran-sc/oam-oam-controller/sdnr-web-image:latest"
   
   deploy-test:
-    needs: [maven-verify]
+    needs: [maven-verify, sanitize]
     runs-on: ubuntu-latest
     steps:
       - name: Download docker artifacts
@@ -117,7 +117,7 @@ jobs:
         with:
           gerrit-refspec: ${{ inputs.GERRIT_REFSPEC }}
           gerrit-url: ${{ vars.GERRIT_URL }}
-          repository: ${{ inputs.GERRIT_PROJECT }}
+          repository: ${{ github.repository_owner }}/${{ needs.sanitize.outputs.sanitized_project }}
           delay: "0s"
 
       - name: Display structure of checkedout files
