@@ -53,10 +53,10 @@ class TestPlan(BaseModel):
       return self.cleanup.req_type
    
    def get_input_url(self):
-      return self.cleanup.req_endpoint
+      return self.input.req_endpoint
    
    def get_input_req_type(self):
-      return self.cleanup.req_type
+      return self.input.req_type
    
    def get_input_payload_file(self):
       return self.input.req_payload_file
