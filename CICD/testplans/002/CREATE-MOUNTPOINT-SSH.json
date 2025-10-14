@@ -3,8 +3,8 @@
         {
             "node-id": "CICD-NON-CALLHOME-SSH-NODE",
             "netconf-node-topology:netconf-node": {
-                "port": 8300,
-                "host": "10.20.11.161",
+                "port": 830,
+                "host": "172.18.0.10",
                 "login-password-unencrypted": {
                     "username": "netconf",
                     "password": "netconf!"

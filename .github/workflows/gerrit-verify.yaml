@@ -98,7 +98,7 @@ jobs:
       DOCKER_ARTIFACTS_TO_SAVE: "o-ran-sc/oam-oam-controller/sdnr-image:latest o-ran-sc/oam-oam-controller/sdnr-web-image:latest"
   
   deploy-test:
-    needs: [maven-verify, sanitize]
+    needs: [prepare, sanitize, maven-verify]
     runs-on: ubuntu-latest
     steps:
       - name: Download docker artifacts
@@ -138,7 +138,7 @@ jobs:
   vote:
     if: ${{ always() }}
     # yamllint enable rule:line-length
-    needs: [prepare, maven-verify]
+    needs: [prepare, maven-verify, deploy-test]
     runs-on: ubuntu-latest
     steps:
       - name: Get conclusion

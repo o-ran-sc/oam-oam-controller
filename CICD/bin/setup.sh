@@ -43,16 +43,16 @@ log() {
 }
 
 cleanup() {
-    log "## Deleting any running/stopped docker containers ##\n"
+    log "## Deleting any running/stopped docker containers ##"
     container_names=$(docker ps --format {{.Names}})
     if [[ "$container_names" != "" ]]; then
         docker rm -f $(docker ps -aq)
     fi
 
-    log "## Checking if docker network with name - ${DOCKER_NETWORK_NAME} - exists ##\n"
+    log "## Checking if docker network with name - ${DOCKER_NETWORK_NAME} - exists ##"
     docker_nw=$(docker network ls --filter name=^${DOCKER_NETWORK_NAME}$ --format {{.Name}})
     if [[ "$docker_nw" != "" ]]; then
-        log "## Docker network with name ${DOCKER_NETWORK_NAME} exists. Deleting it ...##\n"
+        log "## Docker network with name ${DOCKER_NETWORK_NAME} exists. Deleting it ...##"
         docker network rm ${DOCKER_NETWORK_NAME}
     else
         log "## Docker network with name ${DOCKER_NETWORK_NAME} DOES NOT exist ##"
@@ -69,48 +69,48 @@ cleanup() {
 }
 
 build_pynts_images() {
-    log "## Start Building PyNTS ... ##\n"
-    log "## Cloning PyNTS simulator from https://github.com/o-ran-sc/sim-o1-ofhmp-interfaces ##\n"
+    log "## Start Building PyNTS ... ##"
+    log "## Cloning PyNTS simulator from https://github.com/o-ran-sc/sim-o1-ofhmp-interfaces ##"
     git clone https://github.com/o-ran-sc/sim-o1-ofhmp-interfaces.git ${TMPDIR}/sim-o1-ofhmp-interfaces
     cd ${TMPDIR}/sim-o1-ofhmp-interfaces
     make
     if [ $? = 0 ]; then
-        log "\n## Build of PyNTS Successful ##\n"
-        log "## Following docker images were built ##\n"
+        log "## Build of PyNTS Successful ##"
+        log "## Following docker images were built ##"
         docker images | grep pynts
     else
-        log "\n### Build failed ###\n"
+        log "### Build failed ###"
         exit 1
     fi
 }
 
 create_docker_network() {
-    log "\n## Creating docker network - ${DOCKER_NETWORK_NAME} ##\n"
+    log "## Creating docker network - ${DOCKER_NETWORK_NAME} ##"
     docker network create --subnet ${DOCKER_NETWORK_SUB} --gateway ${DOCKER_NETWORK_GW} ${DOCKER_NETWORK_NAME}
 }
 
 start_pynts() {
-    log "## Overwriting file - docker-compose-o-ru-mplane.yaml - with custom file ##\n"
+    log "## Overwriting file - docker-compose-o-ru-mplane.yaml - with custom file ##"
     cp ${CONFIGDIR}/${CUSTOM_O_RU_MPLANE_DC_FILE} ${TMPDIR}/sim-o1-ofhmp-interfaces
     cp ${CONFIGDIR}/${CUSTOM_O_RU_MPLANE_SSH_CALLHOME} ${TMPDIR}/sim-o1-ofhmp-interfaces/o-ru-mplane/data
     cp ${CONFIGDIR}/${CUSTOM_O_RU_MPLANE_TLS_CALLHOME} ${TMPDIR}/sim-o1-ofhmp-interfaces/o-ru-mplane/data
     cp ${CONFIGDIR}/${CUSTOM_O_RU_MPLANE_TLS_NON_CALLHOME} ${TMPDIR}/sim-o1-ofhmp-interfaces/o-ru-mplane/data
-    log "## Starting PyNTS simulator ##\n"
+    log "## Starting PyNTS simulator ##"
     docker compose -f ${TMPDIR}/sim-o1-ofhmp-interfaces/${CUSTOM_O_RU_MPLANE_DC_FILE} up -d 
 }
 
 start_sdnr_components() {
-    log "## Starting SDNR Components (MARIADB, SDNR, SDNC-WEB) ##\n"
-    log "## Copying certs directory to $TMPDIR ##\n"
+    log "## Starting SDNR Components (MARIADB, SDNR, SDNC-WEB) ##"
+    log "## Copying certs directory to $TMPDIR ##"
     cp -r ${CONFIGDIR}/certs ${TMPDIR}
-    log "## Copying sdnr directory to $TMPDIR ##\n"
+    log "## Copying sdnr directory to $TMPDIR ##"
     cp -r ${CONFIGDIR}/sdnr ${TMPDIR}
-    log "## Copying sdnc-web directory to $TMPDIR ##\n"
+    log "## Copying sdnc-web directory to $TMPDIR ##"
     cp -r ${CONFIGDIR}/sdnc-web ${TMPDIR}
-    log "## Copying docker compose file to $TMPDIR ##\n"
+    log "## Copying docker compose file to $TMPDIR ##"
     cp ${CONFIGDIR}/${SDNR_COMPONENTS_DC_FILE} ${TMPDIR}
     cd ${TMPDIR}
-    docker-compose -f ${TMPDIR}/${SDNR_COMPONENTS_DC_FILE} --env-file ${CONFIGDIR}/.env up -d 
+    docker compose -f ${TMPDIR}/${SDNR_COMPONENTS_DC_FILE} --env-file ${CONFIGDIR}/.env up -d 
     cd ${ROOTDIR}
 }
 
@@ -119,7 +119,7 @@ start_test_suite() {
 }
 
 #Main
-log "## Starting CI/CD ##\n"
+log "## Starting CI/CD ##"
 cleanup
 mkdir $TMPDIR
 build_pynts_images

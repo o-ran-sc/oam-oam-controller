@@ -3,8 +3,8 @@
         {
             "node-id": "CICD-NON-CALLHOME-TLS-NODE",
             "netconf-node-topology:netconf-node": {
-                "port": 65131,
-                "host": "10.20.11.161",
+                "port": 6513,
+                "host": "172.18.0.11",
                 "key-based": {
                    "username": "netconf",
                    "key-id": "ODL_private_key_1"
