@@ -83,7 +83,7 @@ jobs:
   maven-verify:
     needs: [prepare, sanitize]
     # yamllint disable-line rule:line-length
-    uses: ravipendurty/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml@73f5667dcaff2ed75f44f1d0e92bc6afaa0ae8d5
+    uses: lfit/releng-reusable-workflows/.github/workflows/compose-make-verify.yaml@39a833c3f0262e4d445836593b8e0e80a23ca1c4
     with:
       GERRIT_BRANCH: ${{ inputs.GERRIT_BRANCH }}
       GERRIT_CHANGE_ID: ${{ inputs.GERRIT_CHANGE_ID }}
