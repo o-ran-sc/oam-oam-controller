@@ -260,7 +260,7 @@
                             <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
                     </execution>
-                   <!-- <execution>
+                   <execution>
                         <id>copy-with-alternalte-repo-2</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -289,7 +289,7 @@
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
-                    </execution>  -->
+                    </execution> 
                 </executions>
 
             </plugin>
