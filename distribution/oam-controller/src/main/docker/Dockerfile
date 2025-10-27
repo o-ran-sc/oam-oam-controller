@@ -34,10 +34,8 @@ RUN ln -s /opt/opendaylight /opt/opendaylight/current
 COPY --chown=odl:odl system /tmp/system
 RUN rsync -a --ignore-existing /tmp/system $ODL_HOME
 # copy patches
-#COPY patches/pax-web-jetty-${odl.ops4j.version}.jar $ODL_HOME/system/org/ops4j/pax/web/pax-web-jetty/${odl.ops4j.version}/
-#COPY patches/aaa-authn-api-${odl.aaa.version}.jar $ODL_HOME/system/org/opendaylight/aaa/aaa-authn-api/${odl.aaa.version}/
-# Add Frinx patches
-#COPY  --chown=odl:odl frinx/org/opendaylight/netconf $ODL_HOME/system/org/opendaylight/netconf/
+COPY patches/pax-web-jetty-${odl.ops4j.version}.jar $ODL_HOME/system/org/ops4j/pax/web/pax-web-jetty/${odl.ops4j.version}/
+COPY patches/aaa-authn-api-${odl.aaa.version}.jar $ODL_HOME/system/org/opendaylight/aaa/aaa-authn-api/${odl.aaa.version}/
 
 COPY --chown=odl:odl system/org/apache/kafka $ODL_HOME/system/org/apache/kafka
 RUN true
