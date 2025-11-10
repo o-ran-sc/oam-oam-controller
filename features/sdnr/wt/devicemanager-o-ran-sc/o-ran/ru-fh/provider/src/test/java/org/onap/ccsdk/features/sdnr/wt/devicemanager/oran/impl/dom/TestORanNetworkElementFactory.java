@@ -31,9 +31,9 @@ import org.junit.Test;
 import org.onap.ccsdk.features.sdnr.wt.common.configuration.ConfigurationFileRepresentation;
 import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.config.ORanDMConfig;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDeviceManagerQNames;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.ORANFM;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.OnapSystem;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.OranHardware;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServiceProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.FaultService;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
@@ -102,14 +102,16 @@ public class TestORanNetworkElementFactory {
 
     @Test
     public void testCreateORANHWComponent() throws Exception {
-        when(domAccessor.getCapabilites().isSupportingNamespace(ORanDeviceManagerQNames.ORAN_HW_COMPONENT)).thenReturn(true);
+        when(capabilities.isSupportingNamespaceAndRevision(
+                QNameModule.of(XMLNamespace.of(OranHardware.NAMESPACE), Revision.of("2019-03-28")))).thenReturn(true);
         ORanNetworkElementFactory factory = new ORanNetworkElementFactory(oranCfg, oranDmConfig);
         assertTrue((factory.create(accessor, serviceProvider)).isPresent());
     }
 
     @Test
     public void testCreateNone() throws Exception {
-        when(domAccessor.getCapabilites().isSupportingNamespace(ORanDeviceManagerQNames.ORAN_HW_COMPONENT)).thenReturn(false);
+        when(capabilities.isSupportingNamespaceAndRevision(
+                QNameModule.of(XMLNamespace.of(OranHardware.NAMESPACE), Revision.of("2019-03-28")))).thenReturn(false);
         ORanNetworkElementFactory factory = new ORanNetworkElementFactory(oranCfg, oranDmConfig);
         assertTrue(!(factory.create(accessor, serviceProvider).isPresent()));
     }

@@ -69,10 +69,10 @@ public class ORanDeviceManagerQNames {
             QName.create(CALLHOME_SERVER_MODULE, "unique-id");
 
     //o-ran-hardware.yang
-    public static final String ORAN_HW_NS = "urn:o-ran:hardware:1.0";
-    public static final String ORAN_HW_REVISION = "2019-03-28";
-    public static final @NonNull QName ORAN_HW_MODULE = QName.create(ORAN_HW_NS, ORAN_HW_REVISION, "o-ran-hardware").intern();
-    public static final @NonNull QName ORAN_HW_COMPONENT = QName.create(ORAN_HW_MODULE, "O-RAN-HW-COMPONENT");
+//    public static final String ORAN_HW_NS = "urn:o-ran:hardware:1.0";
+//    public static final String ORAN_HW_REVISION = "2024-04-15";
+//    public static final @NonNull QName ORAN_HW_MODULE = QName.create(ORAN_HW_NS, ORAN_HW_REVISION, "o-ran-hardware").intern();
+//    public static final @NonNull QName ORAN_HW_COMPONENT = QName.create(ORAN_HW_MODULE, "O-RAN-HW-COMPONENT");
 
     //ietf-netconf-notifications.yang
     public static final String IETF_NETCONF_NOTIFICATIONS_NS = "urn:ietf:params:xml:ns:yang:ietf-netconf-notifications";

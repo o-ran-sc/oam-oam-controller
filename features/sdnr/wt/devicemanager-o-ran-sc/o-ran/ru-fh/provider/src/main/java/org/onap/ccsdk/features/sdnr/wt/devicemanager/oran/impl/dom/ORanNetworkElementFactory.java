@@ -25,7 +25,7 @@ import org.onap.ccsdk.features.sdnr.wt.common.configuration.ConfigurationFileRep
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.factory.NetworkElementFactory;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.service.NetworkElement;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.config.ORanDMConfig;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDeviceManagerQNames;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.OranHardware;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServiceProvider;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.Capabilities;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
@@ -42,22 +42,26 @@ public class ORanNetworkElementFactory implements NetworkElementFactory {
             QName.create("urn:onf:otcc:wireless:yang:radio-access:commscope-onecell", "2020-06-22", "onecell").intern();
     private ORanDMConfig oranSupervisionConfig;
     private ConfigurationFileRepresentation configFileRepresentation;
+    private Optional<OranHardware> oranhw = Optional.empty();
 
-    public ORanNetworkElementFactory(ConfigurationFileRepresentation configFileRepresentation, ORanDMConfig oranSupervisionConfig) {
+    public ORanNetworkElementFactory(ConfigurationFileRepresentation configFileRepresentation,
+            ORanDMConfig oranSupervisionConfig) {
         this.configFileRepresentation = configFileRepresentation;
         this.oranSupervisionConfig = oranSupervisionConfig;
     }
 
     @Override
     public Optional<NetworkElement> create(NetconfAccessor accessor, DeviceManagerServiceProvider serviceProvider) {
+        Optional<NetconfDomAccessor> domAccessor = accessor.getNetconfDomAccessor();
+        if (domAccessor.isPresent()) {
+            this.oranhw = OranHardware.getModule(accessor.getNetconfDomAccessor().get());
+        }
         Capabilities capabilites = accessor.getCapabilites();
         if (!capabilites.isSupportingNamespace(OneCell)) {
-            if (capabilites.isSupportingNamespace(ORanDeviceManagerQNames.ORAN_HW_COMPONENT)) {
+            if (this.oranhw.isPresent()) {
                 log.info("Create device {} ", ORanDOMNetworkElement.class.getName());
-                Optional<NetconfDomAccessor> domAccessor = accessor.getNetconfDomAccessor();
-                if (domAccessor.isPresent()) {
-                    return Optional.of(new ORanDOMNetworkElement(domAccessor.get(), serviceProvider, oranSupervisionConfig, configFileRepresentation));
-                }
+                return Optional.of(new ORanDOMNetworkElement(domAccessor.get(), serviceProvider, oranSupervisionConfig,
+                        configFileRepresentation));
             }
         }
         return Optional.empty();
