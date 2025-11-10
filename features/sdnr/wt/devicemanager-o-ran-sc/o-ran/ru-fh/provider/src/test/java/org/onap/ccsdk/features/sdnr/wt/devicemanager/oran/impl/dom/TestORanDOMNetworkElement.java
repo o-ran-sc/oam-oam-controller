@@ -37,9 +37,9 @@ import org.onap.ccsdk.features.sdnr.wt.common.configuration.ConfigurationFileRep
 import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.service.NetworkElement;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.config.ORanDMConfig;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDeviceManagerQNames;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.ORANFM;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.OnapSystem;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.OranHardware;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServiceProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.FaultService;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.NotificationProxyParser;
@@ -122,7 +122,8 @@ public class TestORanDOMNetworkElement {
     @Test
     public void test() {
         Optional<NetworkElement> oRanNe;
-        when(capabilities.isSupportingNamespace(ORanDeviceManagerQNames.ORAN_HW_COMPONENT)).thenReturn(true);
+        when(capabilities.isSupportingNamespaceAndRevision(
+                QNameModule.of(XMLNamespace.of(OranHardware.NAMESPACE), Revision.of("2019-03-28")))).thenReturn(true);
         when(capabilities.isSupportingNamespace(OneCell)).thenReturn(false);
         when(capabilities.isSupportingNamespace(OnapSystem1)).thenReturn(false);
 
