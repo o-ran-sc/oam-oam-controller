@@ -111,6 +111,7 @@ public class ORanDOMNetworkElement implements NetworkElement, IConfigChangedList
         this.oranDomChangeNotificationListener =
                 new ORanDOMChangeNotificationListener(netconfDomAccessor, vesCollectorService, databaseService);
         if(oranfm.isEmpty()) {
+            LOG.error("unable to detect ORAN FM module version");
             throw new RuntimeException("unable to detect ORAN FM module version");
         }
         this.oranDomFaultNotificationListener =

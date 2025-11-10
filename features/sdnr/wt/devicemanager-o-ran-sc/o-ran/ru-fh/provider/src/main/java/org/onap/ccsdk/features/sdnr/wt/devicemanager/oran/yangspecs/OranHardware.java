@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP : ccsdk features
  * ================================================================================
- * Copyright (C) 2023 highstreet technologies GmbH Intellectual Property.
+ * Copyright (C) 2025 highstreet technologies GmbH Intellectual Property.
  * All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,56 +31,27 @@ import org.opendaylight.yangtools.yang.common.QNameModule;
 import org.opendaylight.yangtools.yang.common.Revision;
 import org.opendaylight.yangtools.yang.common.XMLNamespace;
 
-public class ORANFM extends YangModule {
+public class OranHardware extends YangModule {
 
-    public static final String NAMESPACE = "urn:o-ran:fm:1.0";
-    public static final QNameModule ORANFM_2019_02_04 =
-            QNameModule.of(XMLNamespace.of(NAMESPACE), Revision.of("2019-02-04"));
-    public static final QNameModule ORANFM_2022_08_15 =
-            QNameModule.of(XMLNamespace.of(NAMESPACE), Revision.of("2022-08-15"));
-    public static final QNameModule ORANFM_2024_08_12 =
-            QNameModule.of(XMLNamespace.of(NAMESPACE), Revision.of("2024-08-12"));
-    private static final List<QNameModule> MODULES = Arrays.asList(ORANFM_2019_02_04, ORANFM_2022_08_15, ORANFM_2024_08_12);
+    public static final String NAMESPACE = "urn:o-ran:hardware:1.0";
+    public static final QNameModule ORANHW_2019_03_28 =
+            QNameModule.of(XMLNamespace.of(NAMESPACE), Revision.of("2019-03-28"));
+    public static final QNameModule ORANHW_2024_04_15 =
+            QNameModule.of(XMLNamespace.of(NAMESPACE), Revision.of("2024-04-15"));
+    private static final List<QNameModule> MODULES = Arrays.asList(ORANHW_2019_03_28, ORANHW_2024_04_15);
 
-    ORANFM(NetconfDomAccessor netconfDomAccessor, QNameModule module) {
+    OranHardware(NetconfDomAccessor netconfDomAccessor, QNameModule module) {
         super(netconfDomAccessor, module);
     }
 
-    public QName getFaultSourceQName() {
-        return getQName("fault-source");
+    public QName getModuleQName() {
+        return getQName("o-ran-hardware");
     }
 
-    public QName getFaultIdQName() {
-        return getQName("fault-id");
+    public QName getComponentQName() {
+        return getQName("O-RAN-HW-COMPONENT");
     }
 
-    public QName getFaultSeverityQName() {
-        return getQName("fault-severity");
-    }
-
-    public QName getFaultTextQName() {
-        return getQName("fault-text");
-    }
-
-    public QName getAlarmNotifQName() {
-        return getQName("alarm-notif");
-    }
-
-    public QName getFaultIsClearedQName() {
-        return getQName("is-cleared");
-    }
-
-    public QName getFaultEventTimeQName() {
-        return getQName("event-time");
-    }
-
-    public QName getFaultActiveAlarmListQName() {
-        return getQName("active-alarm-list");
-    }
-
-    public QName getFaultActiveAlarmsQName() {
-        return getQName("active-alarms");
-    }
 
     /**
      * Get specific instance, depending on capabilities
@@ -88,11 +59,11 @@ public class ORANFM extends YangModule {
      * @param netconfDomAccessor
      * @return
      */
-    public static Optional<ORANFM> getModule(NetconfDomAccessor netconfDomAccessor) {
+    public static Optional<OranHardware> getModule(NetconfDomAccessor netconfDomAccessor) {
         Capabilities capabilities = netconfDomAccessor.getCapabilites();
         for (QNameModule module : MODULES) {
             if (capabilities.isSupportingNamespaceAndRevision(module)) {
-                return Optional.of(new ORANFM(netconfDomAccessor, module));
+                return Optional.of(new OranHardware(netconfDomAccessor, module));
             }
         }
         return Optional.empty();
