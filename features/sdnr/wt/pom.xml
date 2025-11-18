@@ -25,13 +25,13 @@
     <parent>
         <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>13.0.0-SNAPSHOT</version>
+        <version>13.0.0</version>
         <relativePath/>
     </parent>
 
     <groupId>org.o-ran-sc.oam-oam-controller.features.sdnr.wt</groupId>
     <artifactId>sdnr-wt</artifactId>
-    <version>13.0.0-SNAPSHOT</version>
+    <version>13.0.0</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-sdnr-wireless transport :: micro-services</name>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.o-ran-sc.oam-oam-controller.features.sdnr.wt</groupId>
             <artifactId>sdnr-wt-data-provider-model</artifactId>
-            <version>13.0.0-SNAPSHOT</version>
+            <version>13.0.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

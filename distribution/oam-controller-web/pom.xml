@@ -4,7 +4,7 @@
 
     <groupId>org.o-ran-sc.oam-oam-controller.distribution</groupId>
     <artifactId>sdnr-web-distribution</artifactId>
-    <version>13.0.0-SNAPSHOT</version>
+    <version>13.0.0</version>
     <packaging>pom</packaging>
 
     <name>SDNR-WEB :: installation :: ${project.artifactId}</name>
@@ -14,7 +14,7 @@
         <base.image.repo>docker.io/bitnamilegacy/nginx:1.25-debian-12</base.image.repo>
         <image.name>o-ran-sc/oam-oam-controller/sdnr-web-image</image.name>
         <sdnc.project.version>${project.version}</sdnc.project.version>
-        <odlux.features.version>13.0.0-SNAPSHOT</odlux.features.version>
+        <odlux.features.version>13.0.0</odlux.features.version>
         <sdnc.build.timestamp>${maven.build.timestamp}</sdnc.build.timestamp>
         <docker.buildArg.https_proxy>${https_proxy}</docker.buildArg.https_proxy>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
