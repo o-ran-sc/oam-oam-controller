@@ -13,6 +13,7 @@
     <properties>
         <base.image.repo>docker.io/bitnamilegacy/nginx:1.25-debian-12</base.image.repo>
         <image.name>o-ran-sc/oam-oam-controller/sdnr-web-image</image.name>
+        <image.version>13.0.0</image.version>
         <sdnc.project.version>${project.version}</sdnc.project.version>
         <odlux.features.version>13.0.0</odlux.features.version>
         <sdnc.build.timestamp>${maven.build.timestamp}</sdnc.build.timestamp>
@@ -183,6 +184,7 @@
                                     <tag>${project.docker.latestminortag.version}</tag>
                                     <tag>${project.docker.latestfulltag.version}</tag>
                                     <tag>${project.docker.latesttagtimestamp.version}</tag>
+                                    <tag>${image.version}</tag>
                                 </tags>
                             </build>
                         </image>

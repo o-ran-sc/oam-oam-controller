@@ -20,7 +20,7 @@
         <base.image.repo>eclipse-temurin:21.0.5_11-jdk-alpine</base.image.repo>
         <image.repo>10.20.6.10:30000</image.repo>
         <image.name>o-ran-sc/oam-oam-controller/sdnr-image</image.name>
-        <image.version>13.0.0-latest</image.version>
+        <image.version>13.0.0</image.version>
         <odl.karaf.version>0.21.2</odl.karaf.version>
         <odl.aaa.version>0.20.8</odl.aaa.version>
         <odl.ops4j.version>8.0.27</odl.ops4j.version>
