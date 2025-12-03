@@ -21,21 +21,23 @@
  *
  */
 
-package org.onap.sdnc.oam
+package org.o_ran_sc.oam_controller.sdnr_web
 
 
 def versionArray;
-if ( project.properties['sdnc.project.version'] != null ) {
-	versionArray = project.properties['sdnc.project.version'].split('\\.');
+if ( project.properties['sdnr-web.project.version'] != null ) {
+	versionArray = project.properties['sdnr-web.project.version'].split('\\.');
 }
 
-if ( project.properties['sdnc.project.version'].endsWith("-SNAPSHOT") ) {
+if ( project.properties['sdnr-web.project.version'].endsWith("-SNAPSHOT") ) {
 	patchArray = versionArray[2].split('-');
 	project.properties['project.docker.latestminortag.version']=versionArray[0] + '.' + versionArray[1] + "-SNAPSHOT-latest";
 	project.properties['project.docker.latestfulltag.version']=versionArray[0] + '.' + versionArray[1] + '.' + patchArray[0] + "-SNAPSHOT-latest";
-	project.properties['project.docker.latesttagtimestamp.version']=versionArray[0] + '.' + versionArray[1] + '.' + patchArray[0] + "-SNAPSHOT-"+project.properties['sdnc.build.timestamp'];
+	project.properties['project.docker.latesttagtimestamp.version']=versionArray[0] + '.' + versionArray[1] + '.' + patchArray[0] + "-SNAPSHOT-"+project.properties['sdnr-web.build.timestamp'];
+	project.properties['docker.push.registry']=project.properties['docker.snapshot.registry'];
 } else {
 	project.properties['project.docker.latestminortag.version']=versionArray[0] + '.' + versionArray[1] + "-STAGING-latest";
 	project.properties['project.docker.latestfulltag.version']=versionArray[0] + '.' + versionArray[1] + '.' + versionArray[2] + "-STAGING-latest";
-	project.properties['project.docker.latesttagtimestamp.version']=versionArray[0] + '.' + versionArray[1] + '.' + versionArray[2] + "-STAGING-"+project.properties['sdnc.build.timestamp'];
+	project.properties['project.docker.latesttagtimestamp.version']=versionArray[0] + '.' + versionArray[1] + '.' + versionArray[2] + "-STAGING-"+project.properties['sdnr-web.build.timestamp'];
+	project.properties['docker.push.registry']=project.properties['docker.release.registry'];
 }

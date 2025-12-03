@@ -14,13 +14,16 @@
         <base.image.repo>docker.io/bitnamilegacy/nginx:1.25-debian-12</base.image.repo>
         <image.name>o-ran-sc/oam-oam-controller/sdnr-web-image</image.name>
         <image.version>14.0.0-SNAPSHOT</image.version>
-        <sdnc.project.version>${project.version}</sdnc.project.version>
+        <sdnr-web.project.version>${project.version}</sdnr-web.project.version>
         <odlux.features.version>14.0.0-SNAPSHOT</odlux.features.version>
-        <sdnc.build.timestamp>${maven.build.timestamp}</sdnc.build.timestamp>
+        <sdnr-web.build.timestamp>${maven.build.timestamp}</sdnr-web.build.timestamp>
         <docker.buildArg.https_proxy>${https_proxy}</docker.buildArg.https_proxy>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
         <docker.push.phase>deploy</docker.push.phase>
         <docker.verbose>true</docker.verbose>
+        <docker.release.registry>nexus3.o-ran-sc.org:10002</docker.release.registry>
+        <docker.snapshot.registry>nexus3.o-ran-sc.org:10003</docker.snapshot.registry>
+        <docker.pull.registry>nexus3.o-ran-sc.org:10001</docker.pull.registry>
     </properties>
 
     <distributionManagement>
@@ -57,7 +60,7 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <source>${basedir}/../TagVersion.groovy</source>
+                            <source>${basedir}/src/main/groovy/TagVersion.groovy</source>
                         </configuration>
                     </execution>
                 </executions>
