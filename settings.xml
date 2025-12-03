@@ -28,7 +28,7 @@
 				<o-ran-sc.nexus.dockerregistry.daily>nexus3.o-ran-sc.org:10003</o-ran-sc.nexus.dockerregistry.daily>
 				<o-ran-sc.nexus.dockerregistry.release>nexus3.o-ran-sc.org:10002</o-ran-sc.nexus.dockerregistry.release>
 				<docker.pull.registry>nexus3.o-ran-sc.org:10001</docker.pull.registry>
-				<docker.push.registry>nexus3.o-ran-sc.org:10002</docker.push.registry>
+				<!-- <docker.push.registry>nexus3.o-ran-sc.org:10002</docker.push.registry> -->
 			</properties>
 		</profile>
 		<profile>
