@@ -30,6 +30,7 @@ CUSTOM_O_RU_MPLANE_SSH_CALLHOME="ietf-netconf-server-ssh-callhome.json"
 CUSTOM_O_RU_MPLANE_TLS_CALLHOME="ietf-netconf-server-tls-callhome.json"
 CUSTOM_O_RU_MPLANE_TLS_NON_CALLHOME="ietf-netconf-server-tls-listen.json"
 SDNR_COMPONENTS_DC_FILE="docker-compose-sdnr-mariadb.yaml"
+ENV_FILE=".env"
 # Code everything relative to the BINDIR
 BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOTDIR="$(cd "${BINDIR}/.." && pwd)"
@@ -95,8 +96,9 @@ start_pynts() {
     cp ${CONFIGDIR}/${CUSTOM_O_RU_MPLANE_SSH_CALLHOME} ${TMPDIR}/sim-o1-ofhmp-interfaces/o-ru-mplane/data
     cp ${CONFIGDIR}/${CUSTOM_O_RU_MPLANE_TLS_CALLHOME} ${TMPDIR}/sim-o1-ofhmp-interfaces/o-ru-mplane/data
     cp ${CONFIGDIR}/${CUSTOM_O_RU_MPLANE_TLS_NON_CALLHOME} ${TMPDIR}/sim-o1-ofhmp-interfaces/o-ru-mplane/data
+    cat ${CONFIGDIR}/${ENV_FILE} >> ${TMPDIR}/sim-o1-ofhmp-interfaces/.env
     log "## Starting PyNTS simulator ##"
-    docker compose -f ${TMPDIR}/sim-o1-ofhmp-interfaces/${CUSTOM_O_RU_MPLANE_DC_FILE} up -d 
+    docker compose -f ${TMPDIR}/sim-o1-ofhmp-interfaces/${CUSTOM_O_RU_MPLANE_DC_FILE} up -d
 }
 
 start_sdnr_components() {

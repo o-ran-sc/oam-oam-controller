@@ -4,6 +4,6 @@
     "basicAuth": true,
     "credentials": {
         "sdnrUsername": "admin",
-        "sdnrPassword": "admin"
+        "sdnrPassword": "admin123"
     }
 }

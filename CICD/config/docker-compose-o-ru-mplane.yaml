@@ -24,7 +24,7 @@ services:
 
       - SDNR_RESTCONF_URL=http://172.18.0.3:8181
       - SDNR_USERNAME=admin
-      - SDNR_PASSWORD=admin
+      - SDNR_PASSWORD=${ADMIN_PASSWORD}
     ports:
       - "8300:830"
       - "65130:6513"
@@ -46,7 +46,7 @@ services:
 
       - SDNR_RESTCONF_URL=http://172.18.0.3:8181
       - SDNR_USERNAME=admin
-      - SDNR_PASSWORD=admin
+      - SDNR_PASSWORD=${ADMIN_PASSWORD}
     ports:
       - "8301:830"
       - "65131:6513"
@@ -68,7 +68,7 @@ services:
       - SDNR_CERTIFICATE_MARKERS=True
       - SDNR_RESTCONF_URL=http://172.18.0.3:8181
       - SDNR_USERNAME=admin
-      - SDNR_PASSWORD=admin
+      - SDNR_PASSWORD=${ADMIN_PASSWORD}
     ports:
       - "8302:830"
       - "65132:6513"
@@ -90,7 +90,7 @@ services:
 
       - SDNR_RESTCONF_URL=http://172.18.0.3:8181
       - SDNR_USERNAME=admin
-      - SDNR_PASSWORD=admin
+      - SDNR_PASSWORD=${ADMIN_PASSWORD}
     ports:
       - "8303:830"
       - "65133:6513"
