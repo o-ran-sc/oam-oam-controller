@@ -48,6 +48,17 @@
         <include.transitive.dependencies>false</include.transitive.dependencies>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>o-ran-sc-releases</id>
+                <url>https://nexus.o-ran-sc.org/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>o-ran-sc-snapshots</id>
+            <url>https://nexus.o-ran-sc.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
