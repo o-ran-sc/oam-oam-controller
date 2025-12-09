@@ -21,7 +21,7 @@ help:
 	@echo "Targets:"
 	@fgrep "##" Makefile | fgrep -v fgrep | sed 's/##/ -/g'
 
-## parents:				Build parents
+## parents:		Build parents
 parents:
 	mvn clean install -f parents/pom.xml -s settings.xml
 
@@ -38,7 +38,7 @@ dist:
 	mvn clean install -f distribution/oam-controller/pom.xml -s settings.xml
 	mvn clean install -f distribution/oam-controller-web/pom.xml -s settings.xml
 
-## deploy				Deploy artifacts to some artifact repository like nexus, jfrog, github packages etc.
+## deploy:		Deploy artifacts to some artifact repository like nexus, jfrog, github packages etc.
 deploy:
 	mvn clean deploy -f parents/pom.xml -s settings.xml
 	mvn clean deploy -f features/sdnr/wt/pom.xml -s settings.xml
@@ -46,6 +46,6 @@ deploy:
 	mvn clean deploy -f distribution/oam-controller/pom.xml -s settings.xml
 	mvn clean deploy -f distribution/oam-controller-web/pom.xml -s settings.xml
 
-## all:                 Build features and images
+## build:               Build features and images
 build: parents features-wt features-odlux dist
 
