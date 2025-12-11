@@ -94,6 +94,26 @@
     <build>
         <plugins>
             <plugin>
+            <groupId>org.jsonschema2pojo</groupId>
+            <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+            <version>1.2.1</version>
+            <executions>
+                <execution>
+                    <id>generate-onap-stddfn-models</id>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                    <configuration>
+                        <sourcePaths>${project.basedir}/src/main/resources</sourcePaths>
+                        <targetPackage>org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves
+                        </targetPackage>
+                        <generateBuilders>true</generateBuilders>
+                        <includeTypeInfo>false</includeTypeInfo>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>

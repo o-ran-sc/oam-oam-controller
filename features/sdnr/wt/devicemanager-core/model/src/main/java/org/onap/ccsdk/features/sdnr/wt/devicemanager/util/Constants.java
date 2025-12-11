@@ -19,24 +19,16 @@
  * ============LICENSE_END=========================================================
  *
  */
-package org.onap.ccsdk.features.sdnr.wt.devicemanager.types;
+package org.onap.ccsdk.features.sdnr.wt.devicemanager.util;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.Event;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Domain;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Priority;
+
+public class Constants {
+
+    public static final Domain VES_DOMAIN = Domain.NOTIFICATION;
+    public static final Priority VES_PRIORITY = Priority.NORMAL;
+    public static final String VES_CHANGETYPE = "ConnectionState";
 
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class VESMessage {
-
-    private Event event;
 }

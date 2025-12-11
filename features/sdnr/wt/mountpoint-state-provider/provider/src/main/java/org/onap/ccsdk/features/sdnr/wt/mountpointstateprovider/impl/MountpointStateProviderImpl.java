@@ -24,18 +24,21 @@
 
 package org.onap.ccsdk.features.sdnr.wt.mountpointstateprovider.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.NetconfNetworkElementService;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorCfgService;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorConfigChangeListener;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.util.MountpointStateVESMessageFormatter;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfNodeConnectListener;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfNodeStateListener;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfNodeStateService;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.device.rev241009.ConnectionOper.ConnectionStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev240911.netconf.node.augment.NetconfNode;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.slf4j.Logger;
@@ -70,12 +73,12 @@ public class MountpointStateProviderImpl implements VESCollectorConfigChangeList
         LOG.info("Init call for {}", APPLICATION_NAME);
         this.vesCollectorService = netconfNetworkElementService.getServiceProvider().getVESCollectorService();
         this.vesCollectorEnabled = vesCollectorService.getConfig().isVESCollectorEnabled();
-        this.vesMessageFormatter = new MountpointStateVESMessageFormatter(vesCollectorService);
+        this.vesMessageFormatter = new MountpointStateVESMessageFormatter(vesCollectorService.getConfig());
         // regsiter for live configuration changes
-        vesCollectorService.registerForChanges(this);
+        this.vesCollectorService.registerForChanges(this);
         // register for node changes
-        netconfNodeStateService.registerNetconfNodeConnectListener(this);
-        netconfNodeStateService.registerNetconfNodeStateListener(this);
+        this.netconfNodeStateService.registerNetconfNodeConnectListener(this);
+        this.netconfNodeStateService.registerNetconfNodeStateListener(this);
 
     }
 
@@ -91,14 +94,26 @@ public class MountpointStateProviderImpl implements VESCollectorConfigChangeList
     @Override
     public void close() throws Exception {
         LOG.info("{} closing ...", this.getClass().getName());
-        vesCollectorService.deregister(this);
+        this.vesCollectorService.deregister(this);
         LOG.info("{} closing done", APPLICATION_NAME);
     }
 
 
+    private void publishStateChange(String nodeId, ConnectionStatus connectionStatus) {
+        try {
+            this.vesCollectorService.publishVESMessage(vesMessageFormatter.createVESMessage(nodeId, connectionStatus));
+        } catch (JsonProcessingException e) {
+            LOG.warn("unable to sent node change notification for node {} and status {}", nodeId, connectionStatus);
+        }
+    }
+
     private void publishStateChange(String nodeId, String connectionStatus) {
-        this.vesCollectorService.publishVESMessage(
-                vesMessageFormatter.createVESMessage(nodeId, connectionStatus, java.time.Clock.systemUTC().instant()));
+        try {
+            this.vesCollectorService.publishVESMessage(vesMessageFormatter.createVESMessage(nodeId, connectionStatus,
+                    java.time.Clock.systemUTC().instant()));
+        } catch (JsonProcessingException e) {
+            LOG.warn("unable to sent node change notification for node {} and status {}", nodeId, connectionStatus);
+        }
     }
 
     @Override
@@ -122,7 +137,7 @@ public class MountpointStateProviderImpl implements VESCollectorConfigChangeList
         LOG.debug("In onEnterConnected of MountpointNodeConnectListenerImpl - nNodeId = {}, IP Address = {}",
                 nNodeId.getValue()
                 , ipv4Address != null ? ipv4Address.getValue() : ipv6Address.getValue());
-        this.publishStateChange(nNodeId.getValue(), netconfNode.getConnectionStatus().toString());
+        this.publishStateChange(nNodeId.getValue(), netconfNode.getConnectionStatus());
     }
 
     @Override
@@ -131,7 +146,7 @@ public class MountpointStateProviderImpl implements VESCollectorConfigChangeList
             return;
         }
         LOG.debug("In onLeaveConnected of MountpointNodeConnectListenerImpl - nNodeId = {}", nNodeId);
-        this.publishStateChange(nNodeId.getValue(), "Unmounted");
+        this.publishStateChange(nNodeId.getValue(), MountpointStateVESMessageFormatter.NODE_CHANGE_LEAVE_CONNECTED);
     }
 
     @Override
@@ -143,7 +158,7 @@ public class MountpointStateProviderImpl implements VESCollectorConfigChangeList
         Ipv6Address ipv6Address = netconfNode.getHost().getIpAddress().getIpv6Address();
         LOG.debug("In onCreated of MountpointNodeStateListenerImpl - nNodeId = {}, IP Address = {}", nNodeId.getValue(),
                 ipv4Address != null ? ipv4Address.getValue() : ipv6Address.getValue());
-        this.publishStateChange(nNodeId.getValue(), netconfNode.getConnectionStatus().toString());
+        this.publishStateChange(nNodeId.getValue(), netconfNode.getConnectionStatus());
 
 
     }
@@ -158,7 +173,7 @@ public class MountpointStateProviderImpl implements VESCollectorConfigChangeList
         LOG.debug("In onStateChange of MountpointNodeStateListenerImpl - nNodeId = {}, IP Address = {}",
                 nNodeId.getValue(),
                 ipv4Address != null ? ipv4Address.getValue() : ipv6Address.getValue());
-        this.publishStateChange(nNodeId.getValue(), netconfNode.getConnectionStatus().toString());
+        this.publishStateChange(nNodeId.getValue(), netconfNode.getConnectionStatus());
 
 
     }
@@ -169,7 +184,7 @@ public class MountpointStateProviderImpl implements VESCollectorConfigChangeList
             return;
         }
         LOG.debug("In onRemoved of MountpointNodeStateListenerImpl - nNodeId = {}", nNodeId);
-        this.publishStateChange(nNodeId.getValue(), "Removed");
+        this.publishStateChange(nNodeId.getValue(), MountpointStateVESMessageFormatter.NODE_CHANGE_REMOVED);
 
     }
 

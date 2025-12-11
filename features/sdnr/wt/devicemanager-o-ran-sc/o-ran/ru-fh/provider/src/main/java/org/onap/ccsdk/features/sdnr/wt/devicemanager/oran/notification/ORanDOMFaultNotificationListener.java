@@ -22,13 +22,12 @@
 package org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.notification;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.dataprovider.ORanDOMToInternalDataModel;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDMDOMUtility;
@@ -37,8 +36,6 @@ import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.vesmapper.ORanDOMFault
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.ORANFM;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.FaultService;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESFaultFieldsPOJO;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESMessage;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfDomAccessor;
 import org.onap.ccsdk.features.sdnr.wt.websocketmanager.model.WebsocketManagerService;
@@ -61,7 +58,7 @@ public class ORanDOMFaultNotificationListener implements DOMNotificationListener
     private final @NonNull WebsocketManagerService websocketManagerService;
     private final @NonNull DataProvider databaseService;
     private final @NonNull ORANFM oranfm;
-
+    private final ObjectMapper objectMapper;
     private Integer counter; //Local counter is assigned to Events in EventLog
 
     public ORanDOMFaultNotificationListener(@NonNull NetconfDomAccessor netconfDomAccessor, ORANFM oranfm,
@@ -75,6 +72,7 @@ public class ORanDOMFaultNotificationListener implements DOMNotificationListener
         this.oranfm = oranfm;
         this.mapper = new ORanDOMFaultToVESFaultMapper(netconfDomAccessor.getNodeId(), this.vesCollectorService,
                 this.oranfm, "AlarmNotif");
+        this.objectMapper = new ObjectMapper();
         this.counter = 0;
     }
 
@@ -118,12 +116,12 @@ public class ORanDOMFaultNotificationListener implements DOMNotificationListener
 
         try {
             if (vesCollectorService.getConfig().isVESCollectorEnabled()) {
-                VESCommonEventHeaderPOJO header = mapper.mapCommonEventHeader(notification, eventTimeInstant);
-                VESFaultFieldsPOJO body = mapper.mapFaultFields(notification);
+                var header = mapper.mapCommonEventHeader(notification, eventTimeInstant);
+                var body = mapper.mapFaultFields(notification);
                 VESMessage vesMsg = vesCollectorService.generateVESEvent(header, body);
                 vesCollectorService.publishVESMessage(vesMsg);
-                LOG.debug("VES Message is  {}", vesMsg.getMessage());
-                writeToEventLog(vesMsg.getMessage(), eventTimeInstant, oranfm.getAlarmNotifQName().getLocalName(),
+                LOG.debug("VES Message is  {}", vesMsg);
+                writeToEventLog(vesMsg, eventTimeInstant, oranfm.getAlarmNotifQName().getLocalName(),
                         counter);
             }
         } catch (JsonProcessingException | DateTimeParseException e) {
@@ -131,7 +129,7 @@ public class ORanDOMFaultNotificationListener implements DOMNotificationListener
         }
     }
 
-    private void writeToEventLog(String data, Instant eventTimeInstant, String notificationName, int sequenceNo) {
+    private void writeToEventLog(VESMessage data, Instant eventTimeInstant, String notificationName, int sequenceNo) {
         EventlogBuilder eventlogBuilder = new EventlogBuilder();
 
         eventlogBuilder.setObjectId("Device");
@@ -139,39 +137,41 @@ public class ORanDOMFaultNotificationListener implements DOMNotificationListener
         eventlogBuilder.setAttributeName(notificationName);
         eventlogBuilder.setNodeId(netconfDomAccessor.getNodeId().getValue());
         String eventLogMsgLvl = vesCollectorService.getConfig().getEventLogMsgDetail();
+        String newValue;
         if (eventLogMsgLvl.equalsIgnoreCase("SHORT")) {
-            data = getShortEventLogMessage(data);
+            newValue = getShortEventLogMessage(data);
         } else if (eventLogMsgLvl.equalsIgnoreCase("MEDIUM")) {
-            data = getMediumEventLogMessage(data);
+            newValue = getMediumEventLogMessage(data);
         } else if (eventLogMsgLvl.equalsIgnoreCase("LONG")) {
-            // do nothing, data already contains long message
+            newValue = getLongEventLogMessage(data);
         } else { // Unknown value, default to "SHORT"
-            data = getShortEventLogMessage(data);
+            newValue = getShortEventLogMessage(data);
         }
-        eventlogBuilder.setNewValue(data);
+        eventlogBuilder.setNewValue(newValue);
         eventlogBuilder.setSourceType(SourceType.Netconf);
         eventlogBuilder.setTimestamp(ORanDMDOMUtility.getDateAndTimeOfInstant(eventTimeInstant));
 
         databaseService.writeEventLog(eventlogBuilder.build());
     }
 
-    private String getShortEventLogMessage(String data) {
+    private String getShortEventLogMessage(VESMessage data) {
+        String domain = data.getEvent().getCommonEventHeader().getDomain().value();
+        String eventId = data.getEvent().getCommonEventHeader().getEventId();
+        return "domain:" + domain + " eventId:" + eventId;
+
+    }
+    private String getMediumEventLogMessage(VESMessage data) {
         try {
-            JSONObject jsonObj = new JSONObject(data);
-            String domain = jsonObj.getJSONObject("event").getJSONObject("commonEventHeader").getString("domain");
-            String eventId = jsonObj.getJSONObject("event").getJSONObject("commonEventHeader").getString("eventId");
-            return "domain:" + domain + " eventId:" + eventId;
-        } catch (JSONException e) {
+            return this.objectMapper.writeValueAsString(data.getEvent().getCommonEventHeader());
+        } catch (JsonProcessingException e) {
             LOG.debug("{}", e);
             return "Invalid message received";
         }
     }
-
-    private String getMediumEventLogMessage(String data) {
+    private String getLongEventLogMessage(VESMessage data) {
         try {
-            JSONObject jsonObj = new JSONObject(data);
-            return jsonObj.getJSONObject("event").getJSONObject("commonEventHeader").toString();
-        } catch (JSONException e) {
+            return this.objectMapper.writeValueAsString(data);
+        } catch (JsonProcessingException e) {
             LOG.debug("{}", e);
             return "Invalid message received";
         }

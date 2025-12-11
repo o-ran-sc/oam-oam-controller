@@ -20,6 +20,7 @@ package org.onap.ccsdk.features.sdnr.wt.devicemanager.service;
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.common.configuration.ConfigurationFileRepresentation;
 import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
+import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfNodeStateService;
 import org.onap.ccsdk.features.sdnr.wt.websocketmanager.model.WebsocketManagerService;
 
 public interface DeviceManagerServiceProvider {
@@ -67,4 +68,7 @@ public interface DeviceManagerServiceProvider {
     /** @return Get VES Collector Service for publishing VES messages to the VES Collector */
     @NonNull
     VESCollectorService getVESCollectorService();
+
+    @NonNull
+    NetconfNodeStateService getNetconfNodeStateService();
 }
