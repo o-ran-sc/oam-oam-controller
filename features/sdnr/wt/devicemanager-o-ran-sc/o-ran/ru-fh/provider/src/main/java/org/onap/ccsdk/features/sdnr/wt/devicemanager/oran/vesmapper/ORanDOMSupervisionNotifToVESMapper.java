@@ -22,11 +22,15 @@
 package org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.vesmapper;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.net.URI;
 import java.time.Instant;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDMDOMUtility;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESStndDefinedFieldsPOJO;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Domain;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Priority;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.Data;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.StndDefinedFields;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 
@@ -70,9 +74,9 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
  */
 public class ORanDOMSupervisionNotifToVESMapper {
 
-    private static final String VES_EVENT_DOMAIN = "stndDefined";
+    private static final Domain VES_EVENT_DOMAIN = Domain.STND_DEFINED;
     private static final String VES_EVENTTYPE = "o-ran-supervision:supervision-notification";
-    private static final String VES_EVENT_PRIORITY = "Low";
+    private static final Priority VES_EVENT_PRIORITY = Priority.LOW;
     private static final String O_RU_SUPERVISION_SCHEMA_REFERENCE =
             "https://gerrit.o-ran-sc.org/r/gitweb?p=scp/oam/modeling.git;a=blob_plain;f=data-model/yang/published/o-ran/ru-fh/o-ran-supervision.yang#components/schemas/ofhm-event-stream";
     private final VESCollectorService vesProvider;
@@ -102,75 +106,54 @@ public class ORanDOMSupervisionNotifToVESMapper {
         this.modelName = modelName;
     }
 
-    public VESCommonEventHeaderPOJO mapCommonEventHeader(DOMNotification notification, Instant eventTime,
+    public CommonEventHeader mapCommonEventHeader(DOMNotification notification, Instant eventTime,
             int sequenceNo) {
-        VESCommonEventHeaderPOJO vesCEH = new VESCommonEventHeaderPOJO();
-        vesCEH.setDomain(VES_EVENT_DOMAIN);
-        vesCEH.setEventName(VES_EVENT_DOMAIN + "_" + VES_EVENTTYPE);
-        vesCEH.setEventType(VES_EVENTTYPE);
-        vesCEH.setPriority(VES_EVENT_PRIORITY);
-
         String eventId = notifName + "-" + Long.toUnsignedString(sequenceNo);
+        return new CommonEventHeader()
+                .withDomain(VES_EVENT_DOMAIN)
+                .withEventName(VES_EVENT_DOMAIN + "_" + VES_EVENTTYPE)
+                .withEventType(VES_EVENTTYPE)
+                .withPriority(VES_EVENT_PRIORITY)
+                .withEventId(eventId)
+                .withStartEpochMicrosec(eventTime.toEpochMilli() * 1000.0)
+                .withLastEpochMicrosec(eventTime.toEpochMilli() * 1000.0)
+                .withNfVendorName(mfgName)
+                .withReportingEntityId(vesProvider.getConfig().getReportingEntityId())
+                .withReportingEntityName(vesProvider.getConfig().getReportingEntityName())
+                .withSequence(sequenceNo)
+                .withSourceId(uuid)
+                .withSourceName(nodeIdString);
 
-        vesCEH.setEventId(eventId);
-        vesCEH.setStartEpochMicrosec(eventTime.toEpochMilli() * 1000);
-        vesCEH.setLastEpochMicrosec(eventTime.toEpochMilli() * 1000);
-        vesCEH.setNfVendorName(mfgName);
-        vesCEH.setReportingEntityId(vesProvider.getConfig().getReportingEntityId());
-        vesCEH.setReportingEntityName(vesProvider.getConfig().getReportingEntityName());
-        vesCEH.setSequence(sequenceNo);
-        vesCEH.setSourceId(uuid);
-        vesCEH.setSourceName(nodeIdString);
-
-        return vesCEH;
     }
 
-    public VESStndDefinedFieldsPOJO mapStndDefinedFields(Instant eventTimeInstant) {
-        VESStndDefinedFieldsPOJO vesStndDefFields = new VESStndDefinedFieldsPOJO();
-        vesStndDefFields.setSchemaReference(O_RU_SUPERVISION_SCHEMA_REFERENCE);
-        vesStndDefFields.setData(getSupervisionData(eventTimeInstant));
-
-        return vesStndDefFields;
+    public StndDefinedFields mapStndDefinedFields(Instant eventTimeInstant) {
+        return new StndDefinedFields()
+                .withSchemaReference(URI.create(O_RU_SUPERVISION_SCHEMA_REFERENCE))
+                .withData(getSupervisionData(eventTimeInstant));
     }
 
-    private DataObject getSupervisionData(Instant eventTimeInstant) {
+    private Data getSupervisionData(Instant eventTimeInstant) {
         ORanSupervisionNotification oruSuperNotif = new ORanSupervisionNotification();
-        oruSuperNotif.setSessionId(999999); // Hardcoded due to limitation in NTS Simulator. Ideally should be NETCONF Session ID
+        oruSuperNotif.setSessionId(
+                999999); // Hardcoded due to limitation in NTS Simulator. Ideally should be NETCONF Session ID
 
         IetfNotification ietfNotif = new IetfNotification();
         ietfNotif.setOranSupervisionNotif(oruSuperNotif);
         ietfNotif.setEventTime(ORanDMDOMUtility.getDateAndTimeOfInstant(eventTimeInstant).getValue());
 
-        DataObject data = new DataObject();
-        data.setIetfNotification(ietfNotif);
-        return data;
+        return new Data().withAdditionalProperty("ietf:notification", ietfNotif);
     }
 
 }
-
-/* Classes for serialization of stndDefinedFields "data" object */
-class DataObject {
-    @JsonProperty("ietf:notification")
-    IetfNotification ietfNotification;
-
-    public DataObject() {}
-
-    public IetfNotification getIetfNotification() {
-        return ietfNotification;
-    }
-
-    public void setIetfNotification(IetfNotification ietfNotification) {
-        this.ietfNotification = ietfNotification;
-    }
-}
-
 
 class IetfNotification {
+
     String eventTime;
     @JsonProperty("o-ran-supervision:supervision-notification")
     ORanSupervisionNotification oranSupervisionNotif;
 
-    public IetfNotification() {}
+    public IetfNotification() {
+    }
 
     public String getEventTime() {
         return eventTime;
@@ -192,10 +175,12 @@ class IetfNotification {
 
 
 class ORanSupervisionNotification {
+
     @JsonProperty("session-id")
     int sessionId;
 
-    public ORanSupervisionNotification() {}
+    public ORanSupervisionNotification() {
+    }
 
     public int getSessionId() {
         return sessionId;

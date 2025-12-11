@@ -46,10 +46,12 @@ import org.onap.ccsdk.features.sdnr.wt.oauthprovider.data.Config;
 import org.onap.ccsdk.features.sdnr.wt.oauthprovider.data.UserTokenPayload;
 import org.onap.ccsdk.features.sdnr.wt.oauthprovider.providers.AuthService;
 import org.onap.ccsdk.features.sdnr.wt.oauthprovider.providers.TokenCreator;
+import org.opendaylight.aaa.api.TokenAuth;
 import org.opendaylight.aaa.api.shiro.principal.ODLPrincipal;
+import org.opendaylight.aaa.shiro.realm.RealmAuthProvider;
 import org.opendaylight.aaa.shiro.realm.TokenAuthRealm;
 import org.opendaylight.aaa.tokenauthrealm.auth.AuthenticationManager;
-import org.opendaylight.aaa.tokenauthrealm.auth.TokenAuthenticators;
+
 
 public class TestRealm {
 
@@ -62,7 +64,12 @@ public class TestRealm {
         try {
             Config config = Config.getInstance(TestConfig.TEST_CONFIG_FILENAME);
             tokenCreator = TokenCreator.getInstance(config);
-            TokenAuthRealm.prepareForLoad(new AuthenticationManager(), new TokenAuthenticators());
+            TokenAuthRealm.prepareForLoad(new AuthenticationManager(), new RealmAuthProvider() {
+                @Override
+                public List<TokenAuth> tokenAuthenticators() {
+                    return List.of();
+                }
+            });
             realm = new OAuth2RealmToTest();
         } catch (IOException e) {
             fail(e.getMessage());

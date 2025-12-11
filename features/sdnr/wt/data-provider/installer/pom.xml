@@ -29,13 +29,13 @@
     <parent>
         <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>14.0.0-SNAPSHOT</version>
+        <version>14.0.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>org.o-ran-sc.oam-oam-controller.features.sdnr.wt</groupId>
     <artifactId>sdnr-wt-data-provider-installer</artifactId>
-    <version>14.0.0-SNAPSHOT</version>
+    <version>14.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>ccsdk-features :: ${project.artifactId}</name>
@@ -49,7 +49,7 @@
             <dependency>
                 <groupId>org.o-ran-sc.oam-oam-controller.parent</groupId>
                 <artifactId>installed-odl-bom</artifactId>
-                <version>14.0.0-SNAPSHOT</version>
+                <version>14.0.1-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

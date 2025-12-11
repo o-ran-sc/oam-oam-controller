@@ -124,8 +124,8 @@ public class TestNetconfNodeStateService extends Mockito {
         //dataBrokerNetconf = new DataBrokerNetconfMock();
         //dataBrokerNetconf.newReadWriteTransaction();
         dataBrokerNetconf = mock(DataBroker.class);
-        when(dataBrokerNetconf.registerTreeChangeListener(any(), any())).thenAnswer(invocation -> {
-            Object pListener = invocation.getArguments()[1];
+        when(dataBrokerNetconf.registerTreeChangeListener(any(),any(), any())).thenAnswer(invocation -> {
+            Object pListener = invocation.getArguments()[2];
             System.out.println("Register " + pListener.getClass().getName());
             if (pListener instanceof DataTreeChangeListener) {
                 System.out.println("Listener");

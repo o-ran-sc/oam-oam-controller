@@ -413,6 +413,11 @@ public class DeviceManagerImpl implements NetconfNetworkElementService, DeviceMa
     }
 
     @Override
+    public @NonNull NetconfNodeStateService getNetconfNodeStateService() {
+        return this.netconfNodeStateService;
+    }
+
+    @Override
     public WebsocketManagerService getWebsocketService() {
         return this.websocketmanagerService;
     }

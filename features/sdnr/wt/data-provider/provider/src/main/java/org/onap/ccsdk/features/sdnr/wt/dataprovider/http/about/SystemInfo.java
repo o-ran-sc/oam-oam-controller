@@ -66,7 +66,7 @@ public class SystemInfo {
     }
 
     public static String getOnapVersion(String baseOdlDirectory, String def) {
-        return getFeatureVersionByFolder(baseOdlDirectory, "system/org/onap/sdnc/northbound/sdnc-northbound-all/", def);
+        return getFeatureVersionByFolder(baseOdlDirectory, "system/org/o-ran-sc/oam-oam-controller/features/sdnr/wt/sdnr-wt-devicemanager-core-feature/", def);
     }
 
     public static String getMdSalVersion(String baseOdlDirectory, String def) {

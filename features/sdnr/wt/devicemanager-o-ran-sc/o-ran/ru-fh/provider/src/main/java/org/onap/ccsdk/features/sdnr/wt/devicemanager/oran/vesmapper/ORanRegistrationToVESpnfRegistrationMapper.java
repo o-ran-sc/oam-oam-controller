@@ -22,12 +22,13 @@
 package org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.vesmapper;
 
 import java.time.Instant;
-
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDMDOMUtility;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDeviceManagerQNames;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESPNFRegistrationFieldsPOJO;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Domain;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Priority;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.PnfRegistrationFields;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
 import org.opendaylight.yangtools.yang.data.api.schema.MapEntryNode;
 import org.slf4j.Logger;
@@ -38,9 +39,9 @@ public class ORanRegistrationToVESpnfRegistrationMapper {
     @SuppressWarnings("unused")
     private static final Logger LOG = LoggerFactory.getLogger(ORanRegistrationToVESpnfRegistrationMapper.class);
     //CommonEventHeader fields
-    private static final String VES_EVENT_DOMAIN = "pnfRegistration";
+    private static final Domain VES_EVENT_DOMAIN = Domain.PNF_REGISTRATION;
     private static final String VES_EVENTTYPE = "NetConf Callhome Registration";
-    private static final String VES_EVENT_PRIORITY = "Normal";
+    private static final Priority VES_EVENT_PRIORITY = Priority.NORMAL;
 
     private final VESCollectorService vesProvider;
     private final NetconfAccessor netconfAccessor;
@@ -56,62 +57,57 @@ public class ORanRegistrationToVESpnfRegistrationMapper {
         this.sequenceNo = 0;
     }
 
-    public VESCommonEventHeaderPOJO mapCommonEventHeader(MapEntryNode component) {
-        VESCommonEventHeaderPOJO vesCEH = new VESCommonEventHeaderPOJO();
-        vesCEH.setDomain(VES_EVENT_DOMAIN);
-        vesCEH.setEventId(netconfAccessor.getNodeId().getValue());
-        vesCEH.setEventName(netconfAccessor.getNodeId().getValue());
-        vesCEH.setEventType(VES_EVENTTYPE);
-        vesCEH.setPriority(VES_EVENT_PRIORITY);
+    public CommonEventHeader mapCommonEventHeader(MapEntryNode component) {
+        return new CommonEventHeader()
+                .withDomain(VES_EVENT_DOMAIN)
+                .withEventId(netconfAccessor.getNodeId().getValue())
+                .withEventName(netconfAccessor.getNodeId().getValue())
+                .withEventType(VES_EVENTTYPE)
+                .withPriority(VES_EVENT_PRIORITY)
+                .withStartEpochMicrosec(Instant.now().toEpochMilli() * 1000.0)
+                .withLastEpochMicrosec(Instant.now().toEpochMilli() * 1000.0)
+                .withNfVendorName(
+                        ORanDMDOMUtility.getLeafValue(component,
+                                ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_NAME))
+                .withReportingEntityId(vesProvider.getConfig().getReportingEntityId())
+                .withReportingEntityName(vesProvider.getConfig().getReportingEntityName())
+                .withSequence(sequenceNo++)
+                .withSourceId(
+                        ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_UUID)
+                                != null
+                                ? ORanDMDOMUtility.getLeafValue(component,
+                                ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_UUID)
+                                : netconfAccessor.getNodeId().getValue())
+                .withSourceName(netconfAccessor.getNodeId().getValue());
 
-        vesCEH.setStartEpochMicrosec(Instant.now().toEpochMilli() * 1000);
-        vesCEH.setLastEpochMicrosec(Instant.now().toEpochMilli() * 1000);
-        vesCEH.setNfVendorName(
-                ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_NAME));
-        vesCEH.setReportingEntityId(vesProvider.getConfig().getReportingEntityId());
-        vesCEH.setReportingEntityName(vesProvider.getConfig().getReportingEntityName());
-        vesCEH.setSequence(sequenceNo++);
-        vesCEH.setSourceId(
-                ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_UUID) != null
-                        ? ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_UUID)
-                        : netconfAccessor.getNodeId().getValue());
-        vesCEH.setSourceName(netconfAccessor.getNodeId().getValue());
-
-        return vesCEH;
     }
 
-    public VESPNFRegistrationFieldsPOJO mapPNFRegistrationFields(MapEntryNode component) {
-        VESPNFRegistrationFieldsPOJO vesPnfFields = new VESPNFRegistrationFieldsPOJO();
+    public PnfRegistrationFields mapPNFRegistrationFields(MapEntryNode component) {
+        return new PnfRegistrationFields()
 
-        vesPnfFields.setModelNumber(
-                ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_NAME));
-        vesPnfFields
-                .setOamV4IpAddress(netconfAccessor.getNetconfNode().getHost().getIpAddress().getIpv4Address() != null
+                .withModelNumber(ORanDMDOMUtility.getLeafValue(component,
+                        ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_NAME))
+                .withOamV4IpAddress(netconfAccessor.getNetconfNode().getHost().getIpAddress().getIpv4Address() != null
                         ? netconfAccessor.getNetconfNode().getHost().getIpAddress().getIpv4Address().getValue()
-                        : null);
-        vesPnfFields
-                .setOamV6IpAddress(netconfAccessor.getNetconfNode().getHost().getIpAddress().getIpv6Address() != null
+                        : null)
+                .withOamV6IpAddress(netconfAccessor.getNetconfNode().getHost().getIpAddress().getIpv6Address() != null
                         ? netconfAccessor.getNetconfNode().getHost().getIpAddress().getIpv6Address().getValue()
-                        : null);
-        vesPnfFields.setSerialNumber(
-                ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_SER_NUM));
-        vesPnfFields.setVendorName(
-                ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_NAME));
-        vesPnfFields.setSoftwareVersion(
-                ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_SW_REV));
-        vesPnfFields.setUnitType(
-                ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_ALIAS));
-        vesPnfFields.setUnitFamily(
-                ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_CLASS));
-        vesPnfFields
-                .setManufactureDate(
-                        ORanDMDOMUtility.getLeafValue(component,
-                                ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_DATE) != null
-                                        ? ORanDMDOMUtility.getLeafValue(component,
-                                                ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_DATE)
-                                        : "Unknown");
+                        : null)
+                .withSerialNumber(ORanDMDOMUtility.getLeafValue(component,
+                        ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_SER_NUM))
+                .withVendorName(ORanDMDOMUtility.getLeafValue(component,
+                        ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_NAME))
+                .withSoftwareVersion(
+                        ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_SW_REV))
+                .withUnitType(
+                        ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_ALIAS))
+                .withUnitFamily(
+                        ORanDMDOMUtility.getLeafValue(component, ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_CLASS))
+                .withManufactureDate(ORanDMDOMUtility.getLeafValue(component,
+                        ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_DATE) != null
+                        ? ORanDMDOMUtility.getLeafValue(component,
+                        ORanDeviceManagerQNames.IETF_HW_COMPONENT_LIST_MFG_DATE)
+                        : "Unknown");
         //vesPnfFields.setLastServiceDate(component.getLastChange());
-
-        return vesPnfFields;
     }
 }

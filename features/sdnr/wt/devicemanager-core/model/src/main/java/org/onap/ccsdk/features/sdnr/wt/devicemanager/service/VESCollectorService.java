@@ -23,12 +23,13 @@ package org.onap.ccsdk.features.sdnr.wt.devicemanager.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.jdt.annotation.NonNull;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESFaultFieldsPOJO;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESMessage;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESNotificationFieldsPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESPNFRegistrationFieldsPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESStndDefinedFieldsPOJO;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.FaultFields;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.NotificationFields;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.PnfRegistrationFields;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.StndDefinedFields;
+
 
 /**
  * Interface used for publishing VES messages to the VES Collector
@@ -48,7 +49,7 @@ public interface VESCollectorService extends DeviceManagerService {
      * @param vesMsg
      * @return
      */
-    boolean publishVESMessage(VESMessage vesMsg);
+    boolean publishVESMessage(VESMessage vesMsg) throws JsonProcessingException;
 
     /**
      *  clients interested in VES Collector configuration changes can call the registerForChanges method so as to be notified when configuration changes are made
@@ -76,7 +77,7 @@ public interface VESCollectorService extends DeviceManagerService {
      * @return VESMessage - representing the VESEvent JSON
      * @throws JsonProcessingException
      */
-    VESMessage generateVESEvent(VESCommonEventHeaderPOJO commonEventHeader, VESNotificationFieldsPOJO notifFields) throws JsonProcessingException;
+    VESMessage generateVESEvent(CommonEventHeader commonEventHeader, NotificationFields notifFields) throws JsonProcessingException;
 
     /**
      * Generates VES Event JSON containing commonEventHeader and faultFields fields
@@ -86,7 +87,7 @@ public interface VESCollectorService extends DeviceManagerService {
      * @return VESMessage - representing the VES Event JSON
      * @throws JsonProcessingException
      */
-    VESMessage generateVESEvent(VESCommonEventHeaderPOJO commonEventHeader, VESFaultFieldsPOJO faultFields) throws JsonProcessingException;
+    VESMessage generateVESEvent(CommonEventHeader commonEventHeader, FaultFields faultFields) throws JsonProcessingException;
 
     /**
      * Generates VES Event JSON containing commonEventHeader and pnfRegistration fields
@@ -96,7 +97,7 @@ public interface VESCollectorService extends DeviceManagerService {
      * @return VESMessage - representing the VES Event JSON
      * @throws JsonProcessingException
      */
-    VESMessage generateVESEvent(VESCommonEventHeaderPOJO commonEventHeader, VESPNFRegistrationFieldsPOJO faultFields) throws JsonProcessingException;
+    VESMessage generateVESEvent(CommonEventHeader commonEventHeader, PnfRegistrationFields faultFields) throws JsonProcessingException;
 
     /**
      * Generates VES Event JSON containing commonEventHeader and stndDefined fields
@@ -106,6 +107,6 @@ public interface VESCollectorService extends DeviceManagerService {
      * @return VESMessage - representing the VES Event JSON
      * @throws JsonProcessingException
      */
-    VESMessage generateVESEvent(VESCommonEventHeaderPOJO commonEventHeader, VESStndDefinedFieldsPOJO stndDefinedFields) throws JsonProcessingException;
+    VESMessage generateVESEvent(CommonEventHeader commonEventHeader, StndDefinedFields stndDefinedFields) throws JsonProcessingException;
     
 }
