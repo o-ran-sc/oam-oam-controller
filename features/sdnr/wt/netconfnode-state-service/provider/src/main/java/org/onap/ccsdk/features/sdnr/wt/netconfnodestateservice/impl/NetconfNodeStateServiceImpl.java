@@ -49,7 +49,6 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
-import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
 import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.NotificationPublishService;
@@ -70,10 +69,9 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
+import org.opendaylight.yangtools.binding.DataObjectReference;
 import org.opendaylight.yangtools.binding.data.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.yangtools.concepts.Registration;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.parser.api.YangParserException;
 import org.opendaylight.yangtools.yang.parser.api.YangParserFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,22 +83,14 @@ public class NetconfNodeStateServiceImpl
     private static final String APPLICATION_NAME = "NetconfNodeStateService";
     private static final String CONFIGURATIONFILE = "etc/netconfnode-status-service.properties";
 
-    private static final @NonNull InstanceIdentifier<Topology> NETCONF_TOPO_IID =
-            InstanceIdentifier.create(NetworkTopology.class).child(Topology.class,
-                    new TopologyKey(new TopologyId(TopologyNetconf.QNAME.getLocalName())));
 
-    private static final @NonNull InstanceIdentifier<Node> NETCONF_NODE_TOPO_IID =
-            InstanceIdentifier.create(NetworkTopology.class)
+    private static final @NonNull DataObjectReference<Node> NETCONF_NODE_TOPO_TREE_ID =
+            DataObjectReference.builder(NetworkTopology.class)
                     .child(Topology.class, new TopologyKey(new TopologyId(TopologyNetconf.QNAME.getLocalName())))
-                    .child(Node.class);
-
-    private static final @NonNull DataTreeIdentifier<Node> NETCONF_NODE_TOPO_TREE_ID =
-            DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL, NETCONF_NODE_TOPO_IID);
+                    .child(Node.class).build();
 
     // Name of ODL controller NETCONF instance
     private static final NodeId CONTROLLER = new NodeId("controller-config");
-    private static final int ASYNC_EXECUTION_POOLSIZE = 20;
-
     // -- OSGi services, provided
     private DataBroker dataBroker;
     private DOMDataBroker domDataBroker;
@@ -229,7 +219,6 @@ public class NetconfNodeStateServiceImpl
     /**
      * Blueprint initialization
      *
-     * @throws YangParserException
      **/
     public void init() {
 
@@ -248,7 +237,7 @@ public class NetconfNodeStateServiceImpl
 
         // Akka setup
         AkkaConfig akkaConfig = getAkkaConfig();
-        this.isCluster = akkaConfig == null ? false : akkaConfig.isCluster();
+        this.isCluster = akkaConfig != null && akkaConfig.isCluster();
         this.clusterName = akkaConfig == null ? "" : akkaConfig.getClusterConfig().getClusterSeedNodeName("abc");
 
         // Provide status information
@@ -264,23 +253,16 @@ public class NetconfNodeStateServiceImpl
         //this.netconfChangeListener.register();
         //DataTreeIdentifier<Node> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL, NETCONF_NODE_TOPO_IID);
 
-        listenerL1 = dataBroker.registerTreeChangeListener(NETCONF_NODE_TOPO_TREE_ID, new L1());
+        listenerL1 = dataBroker.registerTreeChangeListener(LogicalDatastoreType.OPERATIONAL, NETCONF_NODE_TOPO_TREE_ID,
+                new L1());
 
-        this.handlingPool = new KeyBasedThreadpool<NodeId, NetconfChangeDataHolder>(
+        this.handlingPool = new KeyBasedThreadpool<>(
                 this.config.getAsyncHandlingPoolsize(), 1,
                 new GenericRunnableFactory<>() {
                     public Runnable create(final NodeId key, final NetconfChangeDataHolder arg) {
-                        return new Runnable() {
-
-                            @Override
-                            public void run() {
-                                NetconfNodeStateServiceImpl.this.handleDataTreeChange(arg.root, key,
-                                        arg.modificationTyp);
-                            }
-                        };
+                        return () -> NetconfNodeStateServiceImpl.this.handleDataTreeChange(arg.root, key,
+                                arg.modificationTyp);
                     }
-
-                    ;
                 });
         this.initializationSuccessful = true;
 
@@ -322,18 +304,9 @@ public class NetconfNodeStateServiceImpl
         LOG.debug("Register connect listener {}", netconfNodeConnectListener.getClass().getName());
         netconfNodeConnectListenerList.add(netconfNodeConnectListener);
 
-        return new Registration() {
-
-            //@Override
-            public @NonNull L getInstance() {
-                return netconfNodeConnectListener;
-            }
-
-            @Override
-            public void close() {
-                LOG.debug("Remove connect listener {}", netconfNodeConnectListener);
-                netconfNodeConnectListenerList.remove(netconfNodeConnectListener);
-            }
+        return () -> {
+            LOG.debug("Remove connect listener {}", netconfNodeConnectListener);
+            netconfNodeConnectListenerList.remove(netconfNodeConnectListener);
         };
     }
 
@@ -343,17 +316,9 @@ public class NetconfNodeStateServiceImpl
         LOG.debug("Register state listener {}", netconfNodeStateListener.getClass().getName());
         netconfNodeStateListenerList.add(netconfNodeStateListener);
 
-        return new Registration() {
-            //@Override
-            public @NonNull L getInstance() {
-                return netconfNodeStateListener;
-            }
-
-            @Override
-            public void close() {
-                LOG.debug("Remove state listener {}", netconfNodeStateListener);
-                netconfNodeStateListenerList.remove(netconfNodeStateListener);
-            }
+        return () -> {
+            LOG.debug("Remove state listener {}", netconfNodeStateListener);
+            netconfNodeStateListenerList.remove(netconfNodeStateListener);
         };
     }
 
@@ -363,17 +328,9 @@ public class NetconfNodeStateServiceImpl
         LOG.debug("Register Ves notification listener {}", vesNotificationListener.getClass().getName());
         vesNotificationListenerList.add(vesNotificationListener);
 
-        return new Registration() {
-            //@Override
-            public @NonNull L getInstance() {
-                return vesNotificationListener;
-            }
-
-            @Override
-            public void close() {
-                LOG.debug("Remove Ves notification listener {}", vesNotificationListener);
-                vesNotificationListenerList.remove(vesNotificationListener);
-            }
+        return () -> {
+            LOG.debug("Remove Ves notification listener {}", vesNotificationListener);
+            vesNotificationListenerList.remove(vesNotificationListener);
         };
     }
 
@@ -498,7 +455,7 @@ public class NetconfNodeStateServiceImpl
         boolean connectedBefore, connectedAfter, created;
         NetconfNode nNodeAfter = getNetconfNode(root.dataAfter());
         connectedAfter = isConnected(nNodeAfter);
-        if (root.getDataBefore() != null) {
+        if (root.dataBefore() != null) {
             // It is an update or delete
             NetconfNode nodeBefore = getNetconfNode(root.dataBefore());
             connectedBefore = isConnected(nodeBefore);
@@ -535,7 +492,7 @@ public class NetconfNodeStateServiceImpl
                 }
                 if (connectedBefore && !connectedAfter) {
                     handled = true;
-                    leaveConnectedState(nodeId, Optional.of(nNodeAfter));
+                    leaveConnectedState(nodeId, Optional.ofNullable(nNodeAfter));
                 }
                 if (!handled) {
                     //Change if not handled by the messages before
@@ -552,9 +509,9 @@ public class NetconfNodeStateServiceImpl
             case DELETE:
                 // Node removed
                 // leaveconnected state.before = connected;
-                if (!connectedBefore) {
+                //if (!connectedBefore) { // does not work similar to argon-sr2
                     leaveConnectedState(nodeId, Optional.empty());
-                }
+                //}
                 netconfNodeStateListenerList.forEach(item -> {
                     try {
                         item.onRemoved(nodeId);
@@ -562,6 +519,7 @@ public class NetconfNodeStateServiceImpl
                         LOG.info("Exception during onRemoved listener call", e);
                     }
                 });
+
                 // doProcessing(Action.REMOVE, nodeId, root);
                 break;
         }
@@ -572,14 +530,14 @@ public class NetconfNodeStateServiceImpl
 
             final DataObjectModification<Node> root = change.getRootNode();
             if (LOG.isTraceEnabled()) {
-                LOG.trace("Handle this modificationType:{} path:{} root:{}", root.getModificationType(),
-                        change.getRootPath(), root);
+                LOG.trace("Handle this modificationType:{} path:{} root:{}", root.modificationType(),
+                        change.getRootNode(), root);
             }
 
             // Catch potential nullpointer exceptions ..
             try {
-                ModificationType modificationTyp = root.getModificationType();
-                Node node = modificationTyp == ModificationType.DELETE ? root.getDataBefore() : root.getDataAfter();
+                ModificationType modificationTyp = root.modificationType();
+                Node node = modificationTyp == ModificationType.DELETE ? root.dataBefore() : root.dataAfter();
                 NodeId nodeId = node != null ? node.getNodeId() : null;
                 if (nodeId == null) {
                     LOG.warn("L1 without nodeid.");
@@ -588,17 +546,15 @@ public class NetconfNodeStateServiceImpl
                         // Do not forward any controller related events to devicemanager
                         LOG.debug("Stop processing for [{}]", nodeId);
                     } else {
-                        if (modificationTyp == null) {
-                            LOG.warn("L1 empty modification type");
-                        } else {
-                            LOG.trace("handle data tree change with async={}", this.handleDataTreeAsync);
-                            if (this.handleDataTreeAsync) {
-                                this.handlingPool.execute(nodeId, new NetconfChangeDataHolder(root, modificationTyp));
 
-                            } else {
-                                handleDataTreeChange(root, nodeId, modificationTyp);
-                            }
+                        LOG.trace("handle data tree change with async={}", this.handleDataTreeAsync);
+                        if (this.handleDataTreeAsync) {
+                            this.handlingPool.execute(nodeId, new NetconfChangeDataHolder(root, modificationTyp));
+
+                        } else {
+                            handleDataTreeChange(root, nodeId, modificationTyp);
                         }
+
                     }
                 }
             } catch (NullPointerException | IllegalStateException e) {
@@ -634,7 +590,7 @@ public class NetconfNodeStateServiceImpl
     }
 
     private static boolean isConnected(NetconfNode nNode) {
-        return nNode != null ? ConnectionStatus.Connected.equals(nNode.getConnectionStatus()) : false;
+        return nNode != null && ConnectionStatus.Connected == nNode.getConnectionStatus();
     }
 
     private static @Nullable ClusteredConnectionStatus getClusteredConnectionStatus(NetconfNode node) {
@@ -650,10 +606,10 @@ public class NetconfNodeStateServiceImpl
         AkkaConfig akkaConfig;
         try {
             akkaConfig = AkkaConfig.load();
-            LOG.debug("akka.conf loaded: " + akkaConfig.toString());
+            LOG.debug("akka.conf loaded: {}", akkaConfig);
         } catch (Exception e1) {
             akkaConfig = null;
-            LOG.warn("problem loading akka.conf: " + e1.getMessage());
+            LOG.warn("problem loading akka.conf: {}", e1.getMessage());
         }
         if (akkaConfig != null && akkaConfig.isCluster()) {
             LOG.info("cluster mode detected");
@@ -662,7 +618,7 @@ public class NetconfNodeStateServiceImpl
                     LOG.debug("try to load geoconfig");
                     GeoConfig.load();
                 } catch (Exception err) {
-                    LOG.warn("problem loading geoconfig: " + err.getMessage());
+                    LOG.warn("problem loading geoconfig: {}", err.getMessage());
                 }
             } else {
                 LOG.debug("no geoconfig file found");
@@ -698,7 +654,7 @@ public class NetconfNodeStateServiceImpl
 
     }
 
-    public class NetconfChangeDataHolder {
+    public static class NetconfChangeDataHolder {
 
         protected final DataObjectModification<Node> root;
         protected final ModificationType modificationTyp;

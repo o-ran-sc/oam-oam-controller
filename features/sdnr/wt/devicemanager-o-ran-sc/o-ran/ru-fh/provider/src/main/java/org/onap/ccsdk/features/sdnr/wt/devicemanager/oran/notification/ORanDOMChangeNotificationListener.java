@@ -28,8 +28,6 @@ import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.types.NetconfTimeStampImpl;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDeviceManagerQNames;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESNotificationFieldsPOJO;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfDomAccessor;
 import org.opendaylight.mdsal.dom.api.DOMEvent;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
@@ -128,11 +126,11 @@ public class ORanDOMChangeNotificationListener implements DOMNotificationListene
             if (mapper == null) {
                 this.mapper = new ORanDOMNotifToVESEventAssembly(netconfDomAccessor, vesCollectorService);
             }
-            VESCommonEventHeaderPOJO header =
+            var header =
                     mapper.createVESCommonEventHeader(domNotificationXPath.getTime(domNotification),
                             ORanDeviceManagerQNames.IETF_NETCONF_NOTIFICATIONS_NETCONF_CONFIG_CHANGE.getLocalName(),
                             sequenceNo);
-            VESNotificationFieldsPOJO body =
+            var body =
                     mapper.createVESNotificationFields(domNotificationXPath.convertDomNotifToXPath(domNotification),
                             ORanDeviceManagerQNames.IETF_NETCONF_NOTIFICATIONS_NETCONF_CONFIG_CHANGE.getLocalName());
             log.debug("domNotification in XPath format = {}",

@@ -25,8 +25,13 @@ import java.time.Instant;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDMDOMUtility;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.yangspecs.ORANFM;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESFaultFieldsPOJO;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Domain;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Priority;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.FaultFields;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.FaultFields.EventSeverity;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.FaultFields.FaultFieldsVersion;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.FaultFields.VfStatus;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -76,12 +81,12 @@ import org.slf4j.LoggerFactory;
 public class ORanDOMFaultToVESFaultMapper {
     @SuppressWarnings("unused")
     private static final Logger LOG = LoggerFactory.getLogger(ORanDOMFaultToVESFaultMapper.class);
-    private static final String VES_EVENT_DOMAIN = "fault";
+    private static final Domain VES_EVENT_DOMAIN = Domain.FAULT;
     private static final String VES_EVENTTYPE = "ORAN_Fault";
-    private static final String VES_EVENT_PRIORITY = "Normal";
+    private static final Priority VES_EVENT_PRIORITY = Priority.NORMAL;
     private static final String VES_EVENT_CATEGORY = "O-RU Failure";
-    private static final String VES_FAULT_FIELDS_VERSION = "4.0";
-    private static final String VES_FAULT_FIELDS_VFSTATUS = "Active"; //virtual function status
+    private static final FaultFieldsVersion VES_FAULT_FIELDS_VERSION = FaultFieldsVersion._4_0;
+    private static final VfStatus VES_FAULT_FIELDS_VFSTATUS = VfStatus.ACTIVE; //virtual function status
 
     private final VESCollectorService vesProvider;
     private final String notifName; // Name
@@ -112,46 +117,44 @@ public class ORanDOMFaultToVESFaultMapper {
         this.modelName = modelName;
     }
 
-    public VESCommonEventHeaderPOJO mapCommonEventHeader(DOMNotification notification, Instant eventTime) {
-        VESCommonEventHeaderPOJO vesCEH = new VESCommonEventHeaderPOJO();
+    public CommonEventHeader mapCommonEventHeader(DOMNotification notification, Instant eventTime) {
         ContainerNode cn = notification.getBody();
-        vesCEH.setDomain(VES_EVENT_DOMAIN);
-        vesCEH.setEventName(notifName);
-        vesCEH.setEventType(VES_EVENTTYPE);
-        vesCEH.setPriority(VES_EVENT_PRIORITY);
-
         String eventId =
                 notifName + "-" + Integer.parseInt(ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultIdQName()));
 
-        vesCEH.setEventId(eventId);
-        vesCEH.setStartEpochMicrosec(eventTime.toEpochMilli() * 1000);
-        vesCEH.setLastEpochMicrosec(eventTime.toEpochMilli() * 1000);
-        vesCEH.setNfVendorName(mfgName);
-        vesCEH.setReportingEntityId(vesProvider.getConfig().getReportingEntityId());
-        vesCEH.setReportingEntityName(vesProvider.getConfig().getReportingEntityName());
-        vesCEH.setSequence(Integer.parseInt(ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultIdQName())));
-        vesCEH.setSourceId(uuid);
-        vesCEH.setSourceName(nodeIdString);
 
-        return vesCEH;
+        return new CommonEventHeader()
+        .withDomain(VES_EVENT_DOMAIN)
+        .withEventName(notifName)
+        .withEventType(VES_EVENTTYPE)
+        .withPriority(VES_EVENT_PRIORITY)
+                .withEventId(eventId)
+        .withStartEpochMicrosec(eventTime.toEpochMilli() * 1000.0)
+        .withLastEpochMicrosec(eventTime.toEpochMilli() * 1000.0)
+        .withNfVendorName(mfgName)
+        .withReportingEntityId(vesProvider.getConfig().getReportingEntityId())
+        .withReportingEntityName(vesProvider.getConfig().getReportingEntityName())
+        .withSequence(Integer.parseInt(ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultIdQName())))
+        .withSourceId(uuid)
+        .withSourceName(nodeIdString);
+
     }
 
-    public VESFaultFieldsPOJO mapFaultFields(DOMNotification alarmNotif) {
-        VESFaultFieldsPOJO vesFaultFields = new VESFaultFieldsPOJO();
+    public FaultFields mapFaultFields(DOMNotification alarmNotif) {
+        FaultFields vesFaultFields = new FaultFields();
         ContainerNode cn = alarmNotif.getBody();
         vesFaultFields.setAlarmCondition(ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultIdQName()));
         vesFaultFields.setAlarmInterfaceA(ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultSourceQName()));
         vesFaultFields.setEventCategory(VES_EVENT_CATEGORY);
         if (ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultIsClearedQName()).equals("true")) {
-            vesFaultFields.setEventSeverity("NORMAL");
+            vesFaultFields.setEventSeverity(EventSeverity.NORMAL);
         } else {
-            vesFaultFields.setEventSeverity(ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultSeverityQName()));
+            vesFaultFields.setEventSeverity(EventSeverity.fromValue(ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultSeverityQName())));
         }
         vesFaultFields.setEventSourceType(modelName);
         vesFaultFields.setFaultFieldsVersion(VES_FAULT_FIELDS_VERSION);
         vesFaultFields.setSpecificProblem(ORanDMDOMUtility.getLeafValue(cn, oranfm.getFaultTextQName()));
         vesFaultFields.setVfStatus(VES_FAULT_FIELDS_VFSTATUS);
-
         return vesFaultFields;
     }
 

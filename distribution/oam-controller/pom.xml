@@ -5,7 +5,7 @@
 
     <groupId>org.o-ran-sc.oam-oam-controller.distribution</groupId>
     <artifactId>sdnr-distribution</artifactId>
-    <version>14.0.0-SNAPSHOT</version>
+    <version>14.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>SDNR distribution</name>
@@ -17,14 +17,15 @@
 
     <properties>
         <base.sdnc.image.repo>nexus3.onap.org:10001/onap/sdnc-image:2.6.0</base.sdnc.image.repo>
-        <base.image.repo>eclipse-temurin:21.0.5_11-jdk-alpine</base.image.repo>
+        <base.image.repo>eclipse-temurin:21.0.9_10-jdk-alpine</base.image.repo>
         <image.repo>10.20.6.10:30000</image.repo>
         <image.name>o-ran-sc/oam-oam-controller/sdnr-image</image.name>
-        <image.version>14.0.0-SNAPSHOT</image.version>
-        <odl.karaf.version>0.21.2</odl.karaf.version>
-        <odl.aaa.version>0.20.8</odl.aaa.version>
-        <odl.ops4j.version>8.0.27</odl.ops4j.version>
-        <sdnr.features.version>14.0.0-SNAPSHOT</sdnr.features.version>
+        <image.version>14.0.1-SNAPSHOT</image.version>
+        <odl.karaf.version>0.22.1</odl.karaf.version>
+        <odl.aaa.version>0.21.2</odl.aaa.version>
+        <odl.ops4j.version>8.0.33</odl.ops4j.version>
+        
+        <sdnr.features.version>${project.version}</sdnr.features.version>
         <sdnr.feature.groupid>org.o-ran-sc.oam-oam-controller.features.sdnr.wt</sdnr.feature.groupid>
         <sdnr.feature.repopath>system/org/o-ran-sc/oam-oam-controller/features/sdnr/wt</sdnr.feature.repopath>
         <sdnr.project.version>${project.version}</sdnr.project.version>
@@ -38,7 +39,7 @@
         <docker.release.registry>nexus3.o-ran-sc.org:10002</docker.release.registry>
         <docker.snapshot.registry>nexus3.o-ran-sc.org:10003</docker.snapshot.registry>
         <docker.pull.registry>nexus3.o-ran-sc.org:10001</docker.pull.registry>
-		<!-- <docker.push.registry>nexus3.o-ran-sc.org:10003</docker.push.registry> -->
+        <!-- <docker.push.registry>nexus3.o-ran-sc.org:10003</docker.push.registry> -->
     </properties>
 
     <distributionManagement>
@@ -260,7 +261,7 @@
                             <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
                     </execution>
-                   <execution>
+                    <execution>
                         <id>copy-with-alternalte-repo-2</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -289,7 +290,7 @@
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
-                    </execution> 
+                    </execution>
                 </executions>
 
             </plugin>

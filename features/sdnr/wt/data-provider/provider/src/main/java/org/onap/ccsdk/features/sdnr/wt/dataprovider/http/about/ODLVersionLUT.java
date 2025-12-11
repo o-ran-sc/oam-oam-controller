@@ -32,6 +32,16 @@ public class ODLVersionLUT {
         if (onapCCSDKVersion == null) {
             return def;
         }
+
+        if (onapCCSDKVersion.startsWith("14.0.")) {
+            return "N-Release";
+        }
+        if (onapCCSDKVersion.startsWith("3.1.")) {
+            return "ONAP Quebec";
+        }
+        if (onapCCSDKVersion.startsWith("3.0.")) {
+            return "ONAP Paris";
+        }
         if (onapCCSDKVersion.startsWith("2.8.")) {
             return "ONAP Oslo";
         }
@@ -81,6 +91,9 @@ public class ODLVersionLUT {
         }
         if(odlMdsalVersionLUT==null) {
             odlMdsalVersionLUT = new HashMap<>();
+            odlMdsalVersionLUT.put("14.0.18","titanium-SR1 (0.22.1)");
+            odlMdsalVersionLUT.put("14.0.13","titanium-SR0 (0.22.0)");
+           // odlMdsalVersionLUT.put("14.0.18","scandium-SR3 (0.21.3)");
             odlMdsalVersionLUT.put("14.0.11","scandium-SR2 (0.21.2)");
             odlMdsalVersionLUT.put("14.0.4","scandium-SR1 (0.21.1)");
             odlMdsalVersionLUT.put("14.0.2","scandium-SR0 (0.21.0)");

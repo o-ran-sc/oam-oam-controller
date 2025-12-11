@@ -47,7 +47,7 @@ public class TestVESCollectorClient {
             + "VES_COLLECTOR_PORT=8080\n" + "VES_COLLECTOR_TLS_ENABLED=true\n" + "VES_COLLECTOR_USERNAME=sample1\n"
             + "VES_COLLECTOR_PASSWORD=sample1\n" + "VES_COLLECTOR_VERSION=v7\n" + "REPORTING_ENTITY_NAME=ONAP SDN-R\n" + "";
 
-    private static final VESMessage message = new VESMessage("Test Message");
+    private static final VESMessage message = new VESMessage();
     private static final String CONFIG_FILE = "test.properties";
     private static final String CONFIG_FILE2 = "test2.properties";
 

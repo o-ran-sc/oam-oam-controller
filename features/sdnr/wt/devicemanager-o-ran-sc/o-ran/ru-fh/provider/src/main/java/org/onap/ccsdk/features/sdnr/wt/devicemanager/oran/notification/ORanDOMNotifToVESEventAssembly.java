@@ -25,12 +25,17 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESNotificationFieldsPOJO;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Domain;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader.Priority;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.NamedHashMap;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.NotificationFields;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfDomAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +43,9 @@ import org.slf4j.LoggerFactory;
 public class ORanDOMNotifToVESEventAssembly {
 
     private static final Logger log = LoggerFactory.getLogger(ORanDOMNotifToVESEventAssembly.class);
-    private static final String VES_EVENT_DOMAIN = "notification";
+    private static final Domain VES_EVENT_DOMAIN = Domain.NOTIFICATION;
     private static final String VES_EVENTTYPE = "ORAN_notification";
-    private static final String VES_EVENT_PRIORITY = "Normal";
+    private static final Priority VES_EVENT_PRIORITY = Priority.NORMAL;
     private NetconfDomAccessor netconfDomAccessor;
     private VESCollectorService vesProvider;
 
@@ -51,53 +56,42 @@ public class ORanDOMNotifToVESEventAssembly {
     }
 
     // VES CommonEventHeader fields
-    public VESCommonEventHeaderPOJO createVESCommonEventHeader(Instant time, String notificationTypeName,
-            long sequenceNo) {
-        VESCommonEventHeaderPOJO vesCEH = new VESCommonEventHeaderPOJO();
-        vesCEH.setDomain(VES_EVENT_DOMAIN);
-        vesCEH.setEventName(notificationTypeName);
-        vesCEH.setEventType(VES_EVENTTYPE);
-        vesCEH.setPriority(VES_EVENT_PRIORITY);
+    public CommonEventHeader createVESCommonEventHeader(Instant time, String notificationTypeName, int sequenceNo) {
+        String eventId = notificationTypeName + "-" + Long.toUnsignedString(sequenceNo);
+        return new CommonEventHeader()
+                .withDomain(VES_EVENT_DOMAIN)
+                .withEventName(notificationTypeName)
+                .withEventType(VES_EVENTTYPE)
+                .withPriority(VES_EVENT_PRIORITY)
+                .withEventId(eventId)
+                .withStartEpochMicrosec(time.toEpochMilli() * 1000.0)
+                .withLastEpochMicrosec(time.toEpochMilli() * 1000.0)
+                .withNfVendorName("ORAN")
+                .withReportingEntityId(vesProvider.getConfig().getReportingEntityId())
+                .withReportingEntityName(vesProvider.getConfig().getReportingEntityName())
+                .withSequence(sequenceNo)
+                .withSourceId("ORAN")
+                .withSourceName(netconfDomAccessor.getNodeId().getValue());
 
-        String eventId;
-
-        eventId = notificationTypeName + "-" + Long.toUnsignedString(sequenceNo);
-
-        vesCEH.setEventId(eventId);
-        vesCEH.setStartEpochMicrosec(time.toEpochMilli() * 1000);
-        vesCEH.setLastEpochMicrosec(time.toEpochMilli() * 1000);
-        vesCEH.setNfVendorName("ORAN");
-        vesCEH.setReportingEntityId(vesProvider.getConfig().getReportingEntityId());
-        vesCEH.setReportingEntityName(vesProvider.getConfig().getReportingEntityName());
-        vesCEH.setSequence(sequenceNo);
-        vesCEH.setSourceId("ORAN");
-        vesCEH.setSourceName(netconfDomAccessor.getNodeId().getValue());
-        return vesCEH;
     }
 
     // Notification fields
-    public VESNotificationFieldsPOJO createVESNotificationFields(HashMap<String, String> xPathFields,
+    public NotificationFields createVESNotificationFields(Map<String, String> xPathFields,
             String notificationTypeName) {
-        VESNotificationFieldsPOJO vesNotifFields = new VESNotificationFieldsPOJO();
-
-        vesNotifFields.setChangeType(notificationTypeName);
-        vesNotifFields.setChangeIdentifier(netconfDomAccessor.getNodeId().getValue());
-
         StringBuffer buf = new StringBuffer();
         Iterator<Entry<String, String>> it = xPathFields.entrySet().iterator();
+        var mappedPathFields = new org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.HashMap();
         while (it.hasNext()) {
             Entry<String, String> pair = it.next();
             buf.append("\n" + pair.getKey() + " = " + pair.getValue());
+            mappedPathFields.setAdditionalProperty(pair.getKey(), pair.getValue());
         }
-        log.debug("Resultlist({}):{}", xPathFields.size(), buf.toString());
-
-        ArrayList<HashMap<String, Object>> arrayOfNamedHashMap = new ArrayList<HashMap<String, Object>>();
-        HashMap<String, Object> namedHashMap = new HashMap<String, Object>();
-        namedHashMap.put("hashMap", xPathFields);
-        namedHashMap.put("name", notificationTypeName);
-        arrayOfNamedHashMap.add(namedHashMap);
-        vesNotifFields.setArrayOfNamedHashMap(arrayOfNamedHashMap);
-        return vesNotifFields;
+        log.debug("Resultlist({}):{}", xPathFields.size(), buf);
+        return new NotificationFields()
+                .withChangeType(notificationTypeName)
+                .withChangeIdentifier(netconfDomAccessor.getNodeId().getValue())
+                .withArrayOfNamedHashMap(
+                        List.of(new NamedHashMap().withName(notificationTypeName).withHashMap(mappedPathFields)));
 
     }
 }

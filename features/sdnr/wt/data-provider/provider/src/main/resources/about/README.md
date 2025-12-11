@@ -1,10 +1,10 @@
 ## Version Info
 |  |  |
 | --- | ----- |
-| ONAP release | {release-name} |
-| ONAP release version | {release-version} |
+| Release | {release-name} |
+| Release version | {release-version} |
 | Opendaylight release | {odl-version} |
-| ONAP CCSDK version | {ccsdk-version} |
+| CCSDK version | {ccsdk-version} |
 | Build timestamp | {build-time} |
 | Yangtools version | {yangtools-version}  |
 | MD-SAL version | {mdsal-version} |

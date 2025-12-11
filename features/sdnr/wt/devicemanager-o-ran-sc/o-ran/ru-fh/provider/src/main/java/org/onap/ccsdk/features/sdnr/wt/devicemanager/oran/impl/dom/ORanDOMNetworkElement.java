@@ -50,8 +50,6 @@ import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServic
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.FaultService;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.NotificationService;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESPNFRegistrationFieldsPOJO;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.Capabilities;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfDomAccessor;
@@ -262,8 +260,8 @@ public class ORanDOMNetworkElement implements NetworkElement, IConfigChangedList
                 // If the device supports subtended configuration then it is assumed that the
                 // Chassis containing the management interface will be the root component and
                 // there will be only one root.
-                VESCommonEventHeaderPOJO header = mapper.mapCommonEventHeader(component);
-                VESPNFRegistrationFieldsPOJO body = mapper.mapPNFRegistrationFields(component);
+                var header = mapper.mapCommonEventHeader(component);
+                var body = mapper.mapPNFRegistrationFields(component);
                 try {
                     vesCollectorService.publishVESMessage(vesCollectorService.generateVESEvent(header, body));
                 } catch (JsonProcessingException e) {

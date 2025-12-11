@@ -39,12 +39,13 @@ import org.onap.ccsdk.features.sdnr.wt.devicemanager.impl.util.NotificationProxy
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.NotificationProxyParser;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorConfigChangeListener;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESFaultFieldsPOJO;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESMessage;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESNotificationFieldsPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESPNFRegistrationFieldsPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESStndDefinedFieldsPOJO;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.CommonEventHeader;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.Event;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.FaultFields;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.NotificationFields;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.PnfRegistrationFields;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.ves.StndDefinedFields;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.vescollectorconnector.impl.config.VESCollectorCfgImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,12 +101,13 @@ public class VESCollectorServiceImpl implements VESCollectorService, IConfigChan
     }
 
     @Override
-    public boolean publishVESMessage(VESMessage message) {
-        LOG.debug("In VESClient - {} ", message.getMessage());
+    public boolean publishVESMessage(VESMessage vesMessage) throws JsonProcessingException {
+        final var strMessage = this.objMapper.writeValueAsString(vesMessage);
+        LOG.debug("In VESClient - {} ", vesMessage);
         BaseHTTPResponse response;
         try {
             String uri = "eventListener" + "/" + getConfig().getVersion();
-            response = httpClient.sendRequest(uri, "POST", message.getMessage(), headerMap);
+            response = httpClient.sendRequest(uri, "POST", strMessage, headerMap);
             LOG.debug("finished with responsecode {}", response.code);
             return response.code == 200;
         } catch (IOException e) {
@@ -154,16 +156,14 @@ public class VESCollectorServiceImpl implements VESCollectorService, IConfigChan
      * @param commonEventHeader
      * @param notifFields
      * @return VESMessage - representing the VESEvent JSON
-     * @throws JsonProcessingException
      */
     @Override
-    public VESMessage generateVESEvent(VESCommonEventHeaderPOJO commonEventHeader,
-            VESNotificationFieldsPOJO notifFields) throws JsonProcessingException {
-        final var evt = Map.of("event",
-                Map.of("commonEventHeader", commonEventHeader, "notificationFields", notifFields));
-        final var str = objMapper.writeValueAsString(evt);
-        LOG.debug("In generateVESEvent - {}", str);
-        return new VESMessage(str);
+    public VESMessage generateVESEvent(CommonEventHeader commonEventHeader,
+            NotificationFields notifFields) {
+        return VESMessage.builder()
+                .event(new Event().withCommonEventHeader(commonEventHeader).withNotificationFields(notifFields))
+                .build();
+
     }
 
     /**
@@ -172,14 +172,12 @@ public class VESCollectorServiceImpl implements VESCollectorService, IConfigChan
      * @param commonEventHeader
      * @param faultFields
      * @return VESMessage - representing the VES Event JSON
-     * @throws JsonProcessingException
      */
     @Override
-    public VESMessage generateVESEvent(VESCommonEventHeaderPOJO commonEventHeader, VESFaultFieldsPOJO faultFields)
-            throws JsonProcessingException {
-        final var evt = Map.of("event",
-                Map.of("commonEventHeader", commonEventHeader, "faultFields", faultFields));
-        return new VESMessage(objMapper.writeValueAsString(evt));
+    public VESMessage generateVESEvent(CommonEventHeader commonEventHeader, FaultFields faultFields) {
+        return VESMessage.builder()
+                .event(new Event().withCommonEventHeader(commonEventHeader).withFaultFields(faultFields))
+                .build();
     }
 
     /**
@@ -188,14 +186,12 @@ public class VESCollectorServiceImpl implements VESCollectorService, IConfigChan
      * @param commonEventHeader
      * @param pnfRegistrationFields
      * @return VESMessage - representing the VES Event JSON
-     * @throws JsonProcessingException
      */
     @Override
-    public VESMessage generateVESEvent(VESCommonEventHeaderPOJO commonEventHeader,
-            VESPNFRegistrationFieldsPOJO pnfRegistrationFields) throws JsonProcessingException {
-        final var evt = Map.of("event",
-                Map.of("commonEventHeader", commonEventHeader, "pnfRegistrationFields", pnfRegistrationFields));
-        return new VESMessage(objMapper.writeValueAsString(evt));
+    public VESMessage generateVESEvent(CommonEventHeader commonEventHeader,
+            PnfRegistrationFields pnfRegistrationFields) {
+        return VESMessage.builder().event(new Event().withCommonEventHeader(commonEventHeader)
+                .withPnfRegistrationFields(pnfRegistrationFields)).build();
     }
 
     /**
@@ -204,13 +200,12 @@ public class VESCollectorServiceImpl implements VESCollectorService, IConfigChan
      * @param commonEventHeader
      * @param stndDefinedFields
      * @return VESMessage - representing the VES Event JSON
-     * @throws JsonProcessingException
      */
     @Override
-    public VESMessage generateVESEvent(VESCommonEventHeaderPOJO commonEventHeader,
-            VESStndDefinedFieldsPOJO stndDefinedFields) throws JsonProcessingException {
-        final var evt = Map.of("event",
-                Map.of("commonEventHeader", commonEventHeader, "stndDefinedFields", stndDefinedFields));
-        return new VESMessage(objMapper.writeValueAsString(evt));
+    public VESMessage generateVESEvent(CommonEventHeader commonEventHeader,
+            StndDefinedFields stndDefinedFields) {
+        return VESMessage.builder()
+                .event(new Event().withCommonEventHeader(commonEventHeader).withStndDefinedFields(stndDefinedFields)
+                ).build();
     }
 }

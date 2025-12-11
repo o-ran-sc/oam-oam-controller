@@ -15,9 +15,7 @@ import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDMDOMUtility;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.util.ORanDeviceManagerQNames;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.vesmapper.ORanDOMSupervisionNotifToVESMapper;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESMessage;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESStndDefinedFieldsPOJO;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfDomAccessor;
 import org.opendaylight.mdsal.dom.api.DOMNotification;
 import org.opendaylight.mdsal.dom.api.DOMNotificationListener;
@@ -68,11 +66,11 @@ public class ORanDOMSupervisionNotificationListener implements DOMNotificationLi
         Instant eventTimeInstant = ORanDMDOMUtility.getNotificationInstant(notification);
         try {
             if (vesCollectorService.getConfig().isVESCollectorEnabled()) {
-                VESCommonEventHeaderPOJO header = mapper.mapCommonEventHeader(notification, eventTimeInstant, counter);
-                VESStndDefinedFieldsPOJO body = mapper.mapStndDefinedFields(eventTimeInstant);
+                var header = mapper.mapCommonEventHeader(notification, eventTimeInstant, counter);
+                var body = mapper.mapStndDefinedFields(eventTimeInstant);
                 VESMessage vesMsg = vesCollectorService.generateVESEvent(header, body);
                 vesCollectorService.publishVESMessage(vesMsg);
-                LOG.debug("VES Message is  {}", vesMsg.getMessage());
+                LOG.debug("VES Message is  {}", vesMsg);
             }
         } catch (JsonProcessingException | DateTimeParseException e) {
             LOG.debug("Cannot convert event into VES message {}", notification, e);

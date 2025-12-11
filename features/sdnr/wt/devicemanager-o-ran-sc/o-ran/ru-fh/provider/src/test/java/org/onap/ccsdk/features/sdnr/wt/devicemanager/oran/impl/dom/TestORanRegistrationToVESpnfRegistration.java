@@ -33,8 +33,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.vesmapper.ORanRegistrationToVESpnfRegistrationMapper;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorCfgService;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.VESCollectorService;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESCommonEventHeaderPOJO;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.VESPNFRegistrationFieldsPOJO;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -86,8 +84,8 @@ public class TestORanRegistrationToVESpnfRegistration {
 
         ORanRegistrationToVESpnfRegistrationMapper mapper =
                 new ORanRegistrationToVESpnfRegistrationMapper(netconfAccessor, vesCollectorService);
-        VESCommonEventHeaderPOJO commonHeader = mapper.mapCommonEventHeader(buildComponentEntry());
-        VESPNFRegistrationFieldsPOJO pnfFields = mapper.mapPNFRegistrationFields(buildComponentEntry());
+        var commonHeader = mapper.mapCommonEventHeader(buildComponentEntry());
+        var pnfFields = mapper.mapPNFRegistrationFields(buildComponentEntry());
 
         assertEquals(commonHeader.getNfVendorName(), "ISCO");
         assertEquals(pnfFields.getUnitType(), "chassis");
