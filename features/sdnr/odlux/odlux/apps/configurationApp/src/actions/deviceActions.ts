@@ -455,7 +455,20 @@ export const updateDataActionAsyncCreator = (vPath: string, data: any) => async 
         viewSpecification = views[+viewElement.viewId];
       }
     }
+    const elementsToCheck: string[] =[];
 
+    for(const i in viewSpecification.elements){
+      if(viewSpecification.elements[i].module != viewSpecification.ns){
+        const element = viewSpecification.elements[i];
+        if(element.uiType=="choice"){
+          for(let choiceCase in element.cases){
+            for(let elt in element.cases[choiceCase].elements){
+              elementsToCheck.push(element.cases[choiceCase].elements[elt].label);
+            }
+          }
+        }
+      };
+    }
     // remove read-only elements
     const removeReadOnlyElements = (pViewSpecification: ViewSpecification, isList: boolean, pData: any) => {
       if (isList) {
@@ -463,8 +476,12 @@ export const updateDataActionAsyncCreator = (vPath: string, data: any) => async 
       } else {
         return Object.keys(pData).reduce<{ [key: string]: any }>((acc, cur)=>{
           const [nsOrName, name] = cur.split(':', 1);
-          const element = pViewSpecification.elements[cur] || pViewSpecification.elements[nsOrName] || pViewSpecification.elements[name];
-          if (!element && process.env.NODE_ENV === 'development' ) {
+          var element;
+          if(elementsToCheck.find(el => el === cur)){
+            acc[cur] = pData[cur];
+          } else {
+            element = pViewSpecification.elements[cur] || pViewSpecification.elements[nsOrName] || pViewSpecification.elements[name];
+          }          if (!element && process.env.NODE_ENV === 'development' ) {
             throw new Error('removeReadOnlyElements: Could not determine element for data.');
           }
           if (element && element.config) {
